@@ -1,0 +1,4 @@
+# Ignore NPM mods
+node_modules/*
+
+modules/quoteBank.js
