@@ -1,20 +1,42 @@
  .container {
     margin-top: 10px;
 }
+
 .hero-unit {
+	z-index: -1;
+    padding:50px 50px 50px 50px;
+    background-image: url("http://i.imgur.com/3EpXwJU.gif");
+	background-size: cover;
+}
+
+
+/*
+.hero-unit {
+	filter: blur(3px);
+	-webkit-filter: blur(3px);
+	-moz-filter: blur(3px);
+	-o-filter: blur(3px);
+	-ms-filter: blur(3px);
     padding:50px 50px 50px 50px;
     background-image: url("http://unsplash.s3.amazonaws.com/batch%207/sunset-hair.jpg");
     background-size: cover;
 }
+*/
+/*
 #getNewButton {
     float:left;
 }
+*/
 /*
 .hero-unit {
     height: 100%;
     min-height:200px;
 }
 */
-#quote {
-    text-shadow: 4px 4px 2px rgba(255, 255, 255, 1);
+.quoteHolder {
+  text-shadow: .01em .01em 2px rgba(92, 92, 92, 1);
+  font-family: "Abril Fatface";
+  font-size: 150%;
+  color: #FFBDF5;
 }
+

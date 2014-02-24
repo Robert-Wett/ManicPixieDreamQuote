@@ -10,7 +10,6 @@ var opts = {
     max: 25
 };
 
-
 app.configure(function(){
     app.set('port', process.env.PORT || 5000);
     app.set('views', __dirname + '/views');
