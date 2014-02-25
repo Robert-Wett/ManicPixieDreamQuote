@@ -14,20 +14,22 @@
 		<title>Quotes....</title>
 	</head>
 	<body>
-		<div class="container">
-		    <div class="hero-unit">
-		        <div class="span8">
-		        	<h1>
-		        		<span class="quoteHolder">
-		        			<%= quote %>
-		        		</span>
-		        	</h1>
-		        </div>
-		        <% if (author) { %>
-		        <div class="span4">
-		        	<h6><%= author %></h6>
-		        </div>
-		        <% } %>
+	    <div class="hero-unit">
+			<div class="container">
+				<div class="row-fluid">
+			        <div class="span12">
+			        	<h1>
+			        		<span class="quoteHolder">
+			        			<%= quote %>
+			        		</span>
+			        	</h1>
+			        </div>
+			        <% if (author) { %>
+			        <div class="span4">
+			        	<h6><%= author %></h6>
+			        </div>
+			        <% } %>
+				</div>
 		    </div>
 		    <div class="buttonContainer" class="row-fluid">
 		    	<button id="loadQuote" class="btn btn-primary" onclick="loadNewQuote()">Load Quote</button>
