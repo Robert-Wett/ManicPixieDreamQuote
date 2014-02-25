@@ -7,12 +7,11 @@ function quoteObj(id, body) {
 }
 
 var getRandomSet = function(quoteAmount, returnQuote) {
-    alert("Inside getRandomSet() with quoteAmount as " + quoteAmount);
-    var numberList = [],
-        returnQuotes = [],
-        max = q.quotes.length,
-        i = 0,
-        num;
+    var numberList = []
+    ,   returnQuotes = []
+    ,   max = q.quotes.length
+    ,   i = 0
+    ,   num;
 
     for (i; i <= quoteAmount; i++) {
         num = getRandomInt(1, max);
@@ -21,8 +20,9 @@ var getRandomSet = function(quoteAmount, returnQuote) {
         }
     }
 
+    // Return the value, not the list. This is the default. I kept the other
+    // option in just in case, but it's really not used.
     if (returnQuote) {
-        console.log("NumberList: " + numberList);
         _.each(numberList, function(num) {
             returnQuotes.push(new quoteObj(num, q.quotes[num]));
         });
