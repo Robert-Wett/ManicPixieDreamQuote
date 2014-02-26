@@ -13,7 +13,7 @@ var getRandomSet = function(quoteAmount, returnQuote) {
         i = 0,
         num;
 
-    for (i; i <= quoteAmount; i++) {
+    while (numberList.length < quoteAmount) {
         num = getRandomInt(0, max);
         if (!_.contains(numberList, num)) {
             numberList.push(num);
