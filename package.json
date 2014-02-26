@@ -1,13 +1,14 @@
 {
-  "name": "QuotesFromGirls",
-  "version": "0.0.1",
-  "dependencies": {
+    "name": "QuotesFromGirls",
+    "version": "0.0.1",
+    "dependencies": {
         "express": "3.x",
         "ejs": "*",
         "underscore": "*",
         "connect-assets": "*",
-        "mocha": "*"
-  },
+        "mocha": "*",
+        "chai": "*"
+    },
     "engines": {
         "node": "0.8.x",
         "npm": "1.1.x"
