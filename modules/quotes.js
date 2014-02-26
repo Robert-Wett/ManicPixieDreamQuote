@@ -7,14 +7,14 @@ function quoteObj(id, body) {
 }
 
 var getRandomSet = function(quoteAmount, returnQuote) {
-    var numberList = []
-    ,   returnQuotes = []
-    ,   max = q.quotes.length
-    ,   i = 0
-    ,   num;
+    var numberList = [],
+        returnQuotes = [],
+        max = q.quotes.length,
+        i = 0,
+        num;
 
     for (i; i <= quoteAmount; i++) {
-        num = getRandomInt(1, max);
+        num = getRandomInt(0, max);
         if (!_.contains(numberList, num)) {
             numberList.push(num);
         }
@@ -51,3 +51,4 @@ var getSpecificQuote = function(id) {
 
 exports.randomSet = getRandomSet;
 exports.getQuote = getSpecificQuote;
+exports.quote = quoteObj;
