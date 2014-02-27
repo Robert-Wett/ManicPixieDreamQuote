@@ -22,6 +22,7 @@ app.configure(function() {
     app.use(express.static(path.join(__dirname, 'assets')));
 });
 
+
 app.get('/', function(req, res) {
     var quote = quoteFactory.randomSet(opts.min, true);
     console.log(quote);
@@ -38,6 +39,10 @@ app.get('/api/quote', function(req, res) {
 
 // Pull a specific quote
 app.get('/api/quote/:id', function(req, res) {
+    /*
+        Should I add the logic here, or in the quoteFactory/quotes.js module..
+        I'm thinking the quotes.js module
+     */
     res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});
     res.write(JSON.stringify(quoteFactory.getQuote(Number(id))));
     res.end();
