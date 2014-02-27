@@ -24,10 +24,9 @@ app.configure(function() {
 
 
 app.get('/', function(req, res) {
-    var quote = quoteFactory.randomSet(opts.min, true);
+    var quote = quoteFactory.randomSet(opts.min, true)[0];
     console.log(quote);
-    //res.render('layout', {title: "Manic Pixie Dream Girl"});
-    res.render('index', {quote: quote, author: "-girl"});
+    res.render('index', {quoteBody: quote.body, author: "-girl"});
 });
 
 // Pull a random quote
@@ -39,12 +38,8 @@ app.get('/api/quote', function(req, res) {
 
 // Pull a specific quote
 app.get('/api/quote/:id', function(req, res) {
-    /*
-        Should I add the logic here, or in the quoteFactory/quotes.js module..
-        I'm thinking the quotes.js module
-     */
     res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});
-    res.write(JSON.stringify(quoteFactory.getQuote(Number(id))));
+    res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
     res.end();
 });
 
