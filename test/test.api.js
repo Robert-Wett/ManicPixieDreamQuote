@@ -1,7 +1,7 @@
-// TESTING
-var should    = require('chai').should()
-,   supertest = require('supertest')
-,   api       = supertest('http://localhost:5000');
+var should   = require('chai').should()
+//,   assert   = require('assert')
+,   request  = require('supertest')
+,   api      = request('http://localhost:5000');
     
 
 describe('/api/quote', function() {
@@ -12,10 +12,9 @@ describe('/api/quote', function() {
         .expect('Content-Type', /json/)
         .end(function(err, res) {
             if (err) return done(err);
-            // OK - add a parent container for JSON returns.
-            // There shouldn't ever be just a one-off object, it needs
-            // to be wrapped in a parent (much like data.)
-            res.body.should.have.property('quotes').and.be.instanceof(Array);
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('body');
+            done();
         });
     });
 });
