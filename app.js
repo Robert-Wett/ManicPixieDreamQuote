@@ -5,6 +5,8 @@ var express = require('express')
 ,   _ = require('underscore')
 ,   quoteFactory = require('./modules/quotes.js');
 
+app.use(require("connect-assets")());
+
 var opts = {
     min: 1,
     max: 25
@@ -25,15 +27,20 @@ app.configure(function() {
 
 app.get('/', function(req, res) {
     var quote = quoteFactory.randomSet(opts.min, true)[0];
-    console.log(quote);
-    res.render('index', {quoteBody: quote.body, author: "-girl"});
+    res.render('index', {quoteBody: quote.body});
+});
+
+// Deep-Link to a quote
+app.get('/quote/:id', function(req, res) {
+    var quote = quoteFactory.getQuote(req.params.id);
+    res.render('index', {quoteBody: quote.body});
 });
 
 // Testing route
 app.get('/test', function(req, res) {
     var quote = quoteFactory.randomSet(opts.min, true)[0];
     console.log(quote);
-    res.render('index', {quoteBody: quote.body, author: "-girl"});
+    res.render('index', {quoteBody: quote.body});
 });
 
 // Pull a random quote
