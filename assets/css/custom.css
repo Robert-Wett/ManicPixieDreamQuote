@@ -4,11 +4,19 @@
 
 .hero-unit {
 	z-index: -1;
-    padding:50px 50px 50px 50px;
-    background-image: url("http://i.imgur.com/3EpXwJU.gif");
+  padding: 10% 50px 10% 50px;
+/*
+  background-image: url("http://i.imgur.com/3EpXwJUh.gif");
+  background-image: url("http://i.imgur.com/T8E3zzg.png");
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
+  background-image: url("http://i.imgur.com/buUgggo.jpg");
+  background-image: url("http://i.imgur.com/wKYlIhih.jpg");
+*/
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
 	background-size: cover;
+  height:100%;
+  width:100%;
 }
-
 
 /*
 .hero-unit {
@@ -21,8 +29,7 @@
     background-image: url("http://unsplash.s3.amazonaws.com/batch%207/sunset-hair.jpg");
     background-size: cover;
 }
-*/
-/*
+
 #getNewButton {
     float:left;
 }
@@ -34,9 +41,66 @@
 }
 */
 .quoteHolder {
-  text-shadow: .01em .01em 2px rgba(92, 92, 92, 1);
+  text-shadow: .0em .0em 15px rgba(208, 32, 144, 1);
   font-family: "Abril Fatface";
   font-size: 150%;
-  color: #FFBDF5;
+  color: #FFFAFA;
+  text-align: center;
+  vertical-align: middle;
 }
 
+/*
+.main-holder {
+  padding:10% 50px 10% 50px;
+  /*
+  background-image: url("http://i.imgur.com/3EpXwJUh.gif");
+  background-image: url("http://i.imgur.com/T8E3zzg.png");
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
+  background-image: url("http://i.imgur.com/buUgggo.jpg");
+  background-image: url("http://i.imgur.com/wKYlIhih.jpg");
+  *\/
+  filter: blur(3px);
+  -webkit-filter: blur(3px);
+  -moz-filter: blur(3px);
+  -o-filter: blur(3px);
+  -ms-filter: blur(3px);
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
+}
+*/
+
+
+.main-content {
+  text-shadow: .0em .0em 15px rgba(208, 32, 144, 1);
+  font-family: "Abril Fatface";
+  font-size: 150%;
+  color: #FFFAFA;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.main-holder {
+  height:100%;
+  width:100%;
+  background:url("http://i.imgur.com/3EpXwJUh.gif") no-repeat center;
+  background-size:cover;
+  -webkit-filter: blur(8px);
+  -moz-filter: blur(8px);
+  -o-filter: blur(8px);
+  -ms-filter: blur(8px);
+  filter: blur(13px);
+  position: absolute;
+  left:0;
+  top: 0;
+  z-index: -1;
+}
+
+.test {
+  position:relative;
+  position:absolute;
+  z-index:9999;
+  -webkit-filter: blur(0px);
+  -moz-filter: blur(0px);
+  -o-filter: blur(0px);
+  -ms-filter: blur(13px);
+  filter: blur(0px);
+}

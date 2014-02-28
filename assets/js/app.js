@@ -12,8 +12,11 @@ QBANK.loadNewQuote = function() {
 */
 var loadNewQuote = function() {
     var url = '/api/quote';
-    $.ajax(url).success(function(data) {
-        //$(".quoteHolder").html(data[body]);
-        $(".quoteHolder").html(data[0].body);
+    $(".quoteHolder").fadeOut(250, function() {
+        $.ajax(url).success(function(data) {
+            //$(".quoteHolder").html(data[body]);
+            $(".quoteHolder").html(data[0].body);
+            $(".quoteHolder").fadeIn(250);
+        });
     });
 };

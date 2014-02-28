@@ -29,6 +29,13 @@ app.get('/', function(req, res) {
     res.render('index', {quoteBody: quote.body, author: "-girl"});
 });
 
+// Testing route
+app.get('/test', function(req, res) {
+    var quote = quoteFactory.randomSet(opts.min, true)[0];
+    console.log(quote);
+    res.render('index', {quoteBody: quote.body, author: "-girl"});
+});
+
 // Pull a random quote
 app.get('/api/quote', function(req, res) {
     res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});

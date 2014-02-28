@@ -26,3 +26,18 @@ describe('Quote Object Manipulation', function() {
         assert.equal(null, user2.id);
     });
 });
+
+describe('/api/quote', function() {
+
+    it('returns a quote object as JSON', function(done) {
+        api.get('/api/quote')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+            if (err) return done(err);
+            res.body[0].should.have.property('id');
+            res.body[0].should.have.property('body');
+            done();
+        });
+    });
+});
