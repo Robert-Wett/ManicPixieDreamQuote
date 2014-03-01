@@ -1,11 +1,9 @@
-var express = require('express')
-,   app = express()
-,   server = require('http').createServer(app)
-,   path = require('path')
-,   _ = require('underscore')
+var express      = require('express')
+,   app          = express()
+,   server       = require('http').createServer(app)
+,   path         = require('path')
+,   _            = require('underscore')
 ,   quoteFactory = require('./modules/quotes.js');
-
-app.use(require("connect-assets")());
 
 var opts = {
     min: 1,
@@ -16,6 +14,7 @@ app.configure(function() {
     app.set('port', process.env.PORT || 5000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'ejs');
+    app.use(require("connect-assets")());
     app.use(express.favicon());
     app.use(express.logger('dev'));
     app.use(express.bodyParser());
@@ -24,7 +23,7 @@ app.configure(function() {
     app.use(express.static(path.join(__dirname, 'assets')));
 });
 
-
+// Base route
 app.get('/', function(req, res) {
     var quote = quoteFactory.randomSet(opts.min, true)[0];
     res.render('index', {quoteBody: quote.body});
@@ -33,13 +32,6 @@ app.get('/', function(req, res) {
 // Deep-Link to a quote
 app.get('/quote/:id', function(req, res) {
     var quote = quoteFactory.getQuote(req.params.id);
-    res.render('index', {quoteBody: quote.body});
-});
-
-// Testing route
-app.get('/test', function(req, res) {
-    var quote = quoteFactory.randomSet(opts.min, true)[0];
-    console.log(quote);
     res.render('index', {quoteBody: quote.body});
 });
 
@@ -56,7 +48,6 @@ app.get('/api/quote/:id', function(req, res) {
     res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
     res.end();
 });
-
 
 // Start it up
 server.listen(app.get('port'), function() {
