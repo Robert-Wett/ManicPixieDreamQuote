@@ -53,3 +53,9 @@ app.get('/api/quote/:id', function(req, res) {
 server.listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
 });
+
+
+app.get('/api/:quote', function(req, res) {
+    var userInput = req.params.quote;
+    res.render('index', {quoteBody: userInput});
+});
