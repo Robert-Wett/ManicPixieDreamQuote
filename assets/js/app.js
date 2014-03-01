@@ -10,6 +10,7 @@ QBANK.loadNewQuote = function() {
     });
 };
 */
+
 var loadNewQuote = function() {
     var url = '/api/quote';
     $(".quoteHolder").fadeOut(250, function() {
@@ -20,3 +21,11 @@ var loadNewQuote = function() {
         });
     });
 };
+
+
+$body = $("body");
+
+$(document).on({
+    ajaxStart: function() { $body.addClass("loading");    },
+    ajaxStop : function() { $body.removeClass("loading"); }
+});
