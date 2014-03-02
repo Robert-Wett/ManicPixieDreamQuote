@@ -49,13 +49,13 @@ app.get('/api/quote/:id', function(req, res) {
     res.end();
 });
 
+app.get('/api/userquote/:quote', function(req, res) {
+    var userInput = req.params.quote;
+    res.render('index', {quoteBody: userInput});
+});
+
 // Start it up
 server.listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
 });
 
-
-app.get('/api/:quote', function(req, res) {
-    var userInput = req.params.quote;
-    res.render('index', {quoteBody: userInput});
-});

@@ -52,6 +52,18 @@
   z-index: -1;
 }
 
+.vote-buttons {
+  display: inline-block;
+  z-index: 9999;
+  color: white;
+}
+
+.small-button {
+  font-style: italic;
+  font-size: 150%;
+}
+
+
 /* Start by setting display:none to make this hidden.
    Then we position it in relation to the viewport window
    with position:fixed. Width, height, top and left speak
