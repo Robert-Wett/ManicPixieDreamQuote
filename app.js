@@ -68,6 +68,8 @@ app.post('/api/quote/', function(req, res) {
         cookie  = req.cookies.mpdq,
         ret;
 
+    ret = app.handleAction(cookie, quoteId, action);
+/*
     if (cookie) {
         // INCOMING PSEUDOCODE
         var user = client.hget("users", cookie);
@@ -99,6 +101,7 @@ app.post('/api/quote/', function(req, res) {
             app.downvote();
             break;
     }
+*/
 });
 
 
@@ -116,7 +119,21 @@ app.r = {
     },
     userVotes: function(u) {
         // Return all quotes voted on...
-        // TODO
+        var up, down;
+    },
+    upvote: function(userId, quoteId, create) {
+        if (create) {
+            client.hset('users', userId);
+        }
+
+        client.zadd('upvoted:' + quoteId, 'user:' + userId);
+    },
+    downvote: function(userId, quoteId, create) {
+        if (create) {
+            client.hset('users', userId);
+        }
+
+        client.zadd('downvoted:' + quoteId, 'user:' + userId);
     }
 };
 
@@ -126,8 +143,7 @@ app.r = {
 app.handleAction = function(u, quoteId, action) {
     switch (action) {
         case 'share':
-            ret = app.share(u);
-            break;
+            return app.share(u, quoteId);
         case 'up':
             app.upvote(u, quoteId, 1);
             break;
@@ -144,22 +160,21 @@ app.share = function(u) {
 app.upvote = function(u, quoteId, value) {
     var returnUser = app.r.userExists();
 
-    if (history) {
+    if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
-        client.zadd('upvoted:' + quoteId, 'user:' + u);
+        app.r.upvote(userGuid, quoteId);
     }
     else {
         var userGuid = app.guid();
-        client.hset('users', userGuid);
-        client.zadd('upvoted:' + quoteId, 'user:' + userGuid);
+        app.r.upvote(userGuid, quoteId, true);
     }
 };
 
 app.downvote = function(u) {
     var returnUser = app.r.userExists();
 
-    if (history) {
+    if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
         client.zadd('downvoted:' + quoteId, 'user:' + u);
