@@ -8,7 +8,9 @@
         "connect-assets": "*",
         "mocha": "*",
         "chai": "*",
-        "supertest": "*"
+        "supertest": "*",
+        "redis": "0.10.1",
+        "node-uuid": "1.4.1"
     },
     "engines": {
         "node": "0.8.x",

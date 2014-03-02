@@ -49,6 +49,21 @@ var getSpecificQuote = function(id) {
     return new quoteObj(id, q.quotes[id]);
 };
 
+// Add quotes to the redis DB
+var addEntriesToRedisDatabase = function(client) {
+    var curDate = new Date();
+    for (i; i < quotes.length; i++) {
+        client.hmset(quote, {
+            'id': i,
+            'body': quotes[i],
+            'poster': 'admin',
+            'time': new Date().getTime(),
+            'votes': 1
+        });
+    }
+};
+
 exports.randomSet = getRandomSet;
 exports.getQuote = getSpecificQuote;
 exports.quote = quoteObj;
+exports.buildDb = addEntriesToRedisDatabase;
