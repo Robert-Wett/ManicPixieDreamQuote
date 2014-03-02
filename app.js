@@ -134,6 +134,11 @@ app.r = {
         }
 
         client.zadd('downvoted:' + quoteId, 'user:' + userId);
+    },
+    addUser: function() {
+        var user = app.guid();
+        client.hset('users', user);
+        return user;
     }
 };
 
@@ -143,9 +148,9 @@ app.r = {
 app.handleAction = function(u, quoteId, action) {
     switch (action) {
         case 'share':
-            return app.share(u, quoteId);
+            return app.r.share(u, quoteId);
         case 'up':
-            app.upvote(u, quoteId, 1);
+            app.r.upvote(u, quoteId, 1);
             break;
         case 'down':
             app.downvote(u, quoteId, -1);
@@ -158,7 +163,7 @@ app.share = function(u) {
 };
 
 app.upvote = function(u, quoteId, value) {
-    var returnUser = app.r.userExists();
+    var returnUser = app.r.userExists(u);
 
     if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
@@ -166,23 +171,21 @@ app.upvote = function(u, quoteId, value) {
         client.zadd('upvoted:' + quoteId, 'user:' + u);
     }
     else {
-        var userGuid = app.guid();
-        client.hset('users', userGuid);
+        var userGuid = app.r.addUser();
         client.zadd('upvoted:' + quoteId, 'user:' + userGuid);
     }
 };
 
 app.downvote = function(u) {
-    var returnUser = app.r.userExists();
+    var returnUser = app.r.userExists(u);
 
-    if (history) {
+    if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
         client.zadd('downvoted:' + quoteId, 'user:' + u);
     }
     else {
-        var userGuid = app.guid();
-        client.hset('users', userGuid);
+        var userGuid = app.r.addUser();
         client.zadd('downvoted:' + quoteId, 'user:' + userGuid);
     }
 };
