@@ -31,17 +31,36 @@ app.configure(function() {
     app.use(express.cookieParser(config.cookieParserKey));
 });
 
-// Base route
+
+
+//  _____             _            
+// |  __ \           | |           
+// | |__) |___  _   _| |_ ___  ___ 
+// |  _  // _ \| | | | __/ _ \/ __|
+// | | \ \ (_) | |_| | ||  __/\__ \
+// |_|  \_\___/ \__,_|\__\___||___/
+//                                 
+
+// Default
 app.get('/', function(req, res) {
     var quote = quoteFactory.randomSet(config.min, true)[0];
     res.render('index', {quoteBody: quote.body});
 });
 
-// Deep-Link to a quote
+// Deep-Link
 app.get('/quote/:id', function(req, res) {
     var quote = quoteFactory.getQuote(req.params.id);
     res.render('index', {quoteBody: quote.body});
 });
+
+
+
+//                    _____ _____ 
+//              /\   |  __ \_   _|
+//  ______     /  \  | |__) || |  
+// |______|   / /\ \ |  ___/ | |  
+//           / ____ \| |    _| |_ 
+//          /_/    \_\_|   |_____|
 
 // Pull a random quote
 app.get('/api/quote', function(req, res) {
@@ -57,11 +76,13 @@ app.get('/api/quote/:id', function(req, res) {
     res.end();
 });
 
+// Testing, kind of - just returns the query params as a quote.
 app.get('/api/userquote/:quote', function(req, res) {
     var userInput = req.params.quote;
     res.render('index', {quoteBody: userInput});
 });
 
+// POST
 app.post('/api/quote/', function(req, res) {
     var quoteId = req.body.id,
         action  = req.body.action,
@@ -162,6 +183,7 @@ app.downvote = function(u) {
 app.guid = function() {
     return uuid.v1();
 };
+
 
 
 //   _____ _             _     _ _                 
