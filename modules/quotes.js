@@ -51,11 +51,12 @@ var getSpecificQuote = function(id) {
 
 // Add quotes to the redis DB
 var addEntriesToRedisDatabase = function(client) {
-    var curDate = new Date();
-    for (i; i < quotes.length; i++) {
-        client.hmset(quote, {
+    var i = 0;
+    
+    for (i; i < q.quotes.length; i++) {
+        client.hmset(quotes, {
             'id': i,
-            'body': quotes[i],
+            'body': q.quotes[i],
             'poster': 'admin',
             'time': new Date().getTime(),
             'votes': 1

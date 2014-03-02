@@ -110,7 +110,7 @@ client.on("error", function (err) {
 });
 
 app.r = {
-    userVoted: function(u) {
+    userExists: function(u) {
         var user = client.hget('users', u);
         return user ? true : false;
     },
@@ -123,16 +123,16 @@ app.r = {
 //----------------
 // Helper Methods
 //----------------
-app.handleAction = function(u) {
+app.handleAction = function(u, quoteId, action) {
     switch (action) {
         case 'share':
             ret = app.share(u);
             break;
         case 'up':
-            app.upvote(u);
+            app.upvote(u, quoteId, 1);
             break;
         case 'down':
-            app.downvote(u);
+            app.downvote(u, quoteId, -1);
             break;
     }
 };
@@ -141,15 +141,34 @@ app.share = function(u) {
 
 };
 
-app.upvote = function(u) {
-    var history = app.r.userVoted;
-    if (!history) {
+app.upvote = function(u, quoteId, value) {
+    var returnUser = app.r.userExists();
 
+    if (history) {
+        // Store a voting record. The main thing is the 'voted' article,
+        // which is the key. The value will be the 'user:' + guid key.
+        client.zadd('upvoted:' + quoteId, 'user:' + u);
+    }
+    else {
+        var userGuid = app.guid();
+        client.hset('users', userGuid);
+        client.zadd('upvoted:' + quoteId, 'user:' + userGuid);
     }
 };
 
 app.downvote = function(u) {
+    var returnUser = app.r.userExists();
 
+    if (history) {
+        // Store a voting record. The main thing is the 'voted' article,
+        // which is the key. The value will be the 'user:' + guid key.
+        client.zadd('downvoted:' + quoteId, 'user:' + u);
+    }
+    else {
+        var userGuid = app.guid();
+        client.hset('users', userGuid);
+        client.zadd('downvoted:' + quoteId, 'user:' + userGuid);
+    }
 };
 
 app.guid = function() {
@@ -158,7 +177,7 @@ app.guid = function() {
 
 
 // Start it up
-populateDatabase(client);
+quoteFactory.buildDb(client);
 
 server.listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
