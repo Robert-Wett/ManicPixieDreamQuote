@@ -154,7 +154,7 @@ app.handleAction = function(u, quoteId, action) {
 };
 
 app.share = function(u) {
-
+    // TODO
 };
 
 app.upvote = function(u, quoteId, value) {
@@ -163,18 +163,19 @@ app.upvote = function(u, quoteId, value) {
     if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
-        app.r.upvote(userGuid, quoteId);
+        client.zadd('upvoted:' + quoteId, 'user:' + u);
     }
     else {
         var userGuid = app.guid();
-        app.r.upvote(userGuid, quoteId, true);
+        client.hset('users', userGuid);
+        client.zadd('upvoted:' + quoteId, 'user:' + userGuid);
     }
 };
 
 app.downvote = function(u) {
     var returnUser = app.r.userExists();
 
-    if (returnUser) {
+    if (history) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
         client.zadd('downvoted:' + quoteId, 'user:' + u);
