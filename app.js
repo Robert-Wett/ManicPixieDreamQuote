@@ -69,39 +69,8 @@ app.post('/api/quote/', function(req, res) {
         ret;
 
     ret = app.handleAction(cookie, quoteId, action);
-/*
-    if (cookie) {
-        // INCOMING PSEUDOCODE
-        var user = client.hget("users", cookie);
-        app.handleAction(user, quoteId, action);
-    }
-    else {
-        // New user - create a cookie with the key of 'mdpg', which is short for
-        // 'ManixPixieDreamQuote', and set the value to a random guid that we can
-        // track in our redis stores
-        var userGuid = app.guid();
-
-        // Set the cookie first
-        res.cookie('mpdq', userGuid, { maxAge: month });
-
-        // Add user's guid to our user table. We keep track of this to prevent
-        // multiple votes. Note we are only keeping these for a month, so it's more
-        // for users who keep coming back. I don't want to make people sign in.
-        client.hset("users", userGuid);
-    }
-
-    switch (action) {
-        case 'share':
-            ret = app.share();
-            break;
-        case 'up':
-            app.upvote();
-            break;
-        case 'down':
-            app.downvote();
-            break;
-    }
-*/
+    // TODO: Do something with the response
+    res.write(ret);
 });
 
 
@@ -168,11 +137,11 @@ app.upvote = function(u, quoteId, value) {
     if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
-        client.zadd('upvoted:' + quoteId, 'user:' + u);
+        app.r.upvote(u, quoteId, value);
     }
     else {
         var userGuid = app.r.addUser();
-        client.zadd('upvoted:' + quoteId, 'user:' + userGuid);
+        app.r.upvote(userGuid, quoteId, value);
     }
 };
 
@@ -182,11 +151,11 @@ app.downvote = function(u) {
     if (returnUser) {
         // Store a voting record. The main thing is the 'voted' article,
         // which is the key. The value will be the 'user:' + guid key.
-        client.zadd('downvoted:' + quoteId, 'user:' + u);
+        app.r.downvote(u, quoteId, value);
     }
     else {
         var userGuid = app.r.addUser();
-        client.zadd('downvoted:' + quoteId, 'user:' + userGuid);
+        app.r.downvote(userGuid, quoteId, value);
     }
 };
 
@@ -195,7 +164,14 @@ app.guid = function() {
 };
 
 
-// Start it up
+//   _____ _             _     _ _                 
+//  / ____| |           | |   (_) |                
+// | (___ | |_ __ _ _ __| |_   _| |_   _   _ _ __  
+//  \___ \| __/ _` | '__| __| | | __| | | | | '_ \ 
+//  ____) | || (_| | |  | |_  | | |_  | |_| | |_) |
+// |_____/ \__\__,_|_|   \__| |_|\__|  \__,_| .__/ 
+//                                          | |    
+//                                          |_|    
 quoteFactory.buildDb(client);
 
 server.listen(app.get('port'), function() {
