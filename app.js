@@ -7,7 +7,7 @@ var express      = require('express')
 ,   _            = require('underscore')
 ,   quoteFactory = require('./modules/quotes.js')
 ,   uuid         = require('node-uuid')
-,   config       = require('config.js');
+,   config       = require('./config.js');
 
 
 app.configure(function() {
@@ -30,7 +30,6 @@ app.configure(function() {
     // for signing the cookies.
     app.use(express.cookieParser(config.cookieParserKey));
 });
-
 
 
 //  _____             _            
@@ -89,7 +88,7 @@ app.post('/api/quote/', function(req, res) {
         cookie  = req.cookies.mpdq,
         ret;
 
-    ret = app.handleAction(cookie, quoteId, action);
+    ret = app.handleAction(req, cookie, quoteId, action);
     // TODO: Do something with the response
     res.write(ret);
 });
@@ -116,31 +115,62 @@ app.r = {
             client.hset('users', userId);
         }
 
-        client.zadd('upvoted:' + quoteId, 'user:' + userId);
+        // Add the user's id to the list of users who interacted with this quote
+        client.sadd('voted:' + quoteId, 'user:' + userId);
+        // Add the user's id to the list of users who voted this up
+        client.sadd('upvoted:' + quoteId, 'user:' + userId);
+        // Increment the entry in the main score zset
+        client.zincrby('score:', "quote:" + quoteId, 1);
     },
     downvote: function(userId, quoteId, create) {
         if (create) {
             client.hset('users', userId);
         }
 
+        // Decrement the base quote hash objects score
+        client.hincrby(quoteId, 'downs', 1);
+        // Add the user's id to the list of users who interacted with this quote
+        client.zadd('quote:' + quoteId, 'user:' + userId);
+        // Add the user's id to the list of users who voted this down
         client.zadd('downvoted:' + quoteId, 'user:' + userId);
+        // Decrement the entry in the main score zset
+        client.zincrby('score:' + quoteId, -1);
     },
     addUser: function() {
         var user = app.guid();
         client.hset('users', user);
         return user;
+    },
+    addQuote: function(body, poster) {
+        var _id;
+        if (!body || !poster) return;
+
+        _id = client.incr('quotes:count');
+
+        client.hmset('quote:' + _id, {
+            'body': body,
+            'poster': 'admin',
+            'time': new Date().getTime(),
+            'ups': 1,
+            'downs': 0
+        });
     }
 };
 
 //----------------
 // Helper Methods
 //----------------
+app.addUser = function(httpObject, cookieVal) {
+    // httpObject can be req/res
+    httpObject.cookies.manicpixiedreamquote = cookieVal;
+};
+
 app.handleAction = function(u, quoteId, action) {
     switch (action) {
         case 'share':
             return app.r.share(u, quoteId);
         case 'up':
-            app.r.upvote(u, quoteId, 1);
+            app.upvote(u, quoteId, 1);
             break;
         case 'down':
             app.downvote(u, quoteId, -1);
@@ -151,8 +181,8 @@ app.handleAction = function(u, quoteId, action) {
 app.share = function(u) {
     // TODO
 };
-
-app.upvote = function(u, quoteId, value) {
+// Handled now with app.r (redis handler)
+app.upvote = function(req, u, quoteId, value) {
     var returnUser = app.r.userExists(u);
 
     if (returnUser) {
@@ -162,6 +192,7 @@ app.upvote = function(u, quoteId, value) {
     }
     else {
         var userGuid = app.r.addUser();
+        app.addUser(userGuid);
         app.r.upvote(userGuid, quoteId, value);
     }
 };
