@@ -60,6 +60,8 @@ var quoteUpvote = function(client, userId, quoteId, cb) {
     })
   );
 
+  // Check this object for the `err` object. If `err`, then return to the error handler.
+  // Else, we should have the `redis.print` repsonses in case we want them.
   return redisFeedback;
 };
 
