@@ -57,7 +57,6 @@ var addUsers = function(users) {
 
 var addEntriesToRedisDatabase = function(client, postedBy) {
   var poster = postedBy || "admin";
-  var date   = new Date();
   var quoteObject;
   var quoteKey;
   var _id;
@@ -82,7 +81,7 @@ var addEntriesToRedisDatabase = function(client, postedBy) {
     quoteObject = {
       'body'    : q.quotes[_id],
       'author'  : poster,
-      'created' : _date.getTime(),
+      'created' : new Date().getTime(),
       'votes'   : 1
     };
 
