@@ -1,69 +1,46 @@
-var client = createclienthere();
-
 /*----------
 redis stuff
 ------------*/
-client.on("error", function (err) {
-    console.log("error event - " + client.host + ":" + client.port + " - " + err);
-});
 
-
-var userexists = function(u) {
-    var user = client.hget('users', u);
-    return user ? true : false;
+var qUpvote = function(client, quoteId) {
+  quoteId = 'quote:' + quoteId;
+  client.hincrby(quoteid, 1, 'score', function(err, res){});
+  client.zincrby('score:', 1, quoteId, function(err, res){});
 };
 
-var uservotes = function(u) {
-    // return all quotes voted on...
-    var up, down;
+var qDownvote = function(client, quoteId) {
+  quoteId = 'quote:' + quoteId;
+  client.hincrby(quoteid, -1, 'score', function(err, res){});
+  client.zincrby('score:', -1, quoteId, function(err, res){});
 };
 
-/**
- * Executes all necessary actions needed to record an upvote from a user.
- * This includes adding to :SET=>
- * @param  {[Object]}   client    Redis Client
- * @param  {[String]}   userId    Unique ID assigned to a user/cookie
- * @param  {[String]}   quoteId   Unique ID assigned to a specific quote
- * @param  {Function}   cb        Callback handler to return the results of the
- *                                function call to
- * @return {[Function]}           Returns the results of the supplied callback
- *                                function after execution, and the redis.print output
- */
-var quoteUpvote = function(client, userId, quoteId, cb) {
-  var redisFeedback = []; // Hold all the redis.print output
+var qCreate = function(client, body) {
+  client.incr('quote:', function( err, quoteId ) {
+    if (err) return;
 
-  // increment the base quote hash objects score
-  redisFeedback.push(
-    client.hincr(quoteid, 'ups', redis.print, function( err, res ) {
-      if (err) return cb(err);
-    })
-  );
-  
-  // add the user's id to the list of users who interacted with this quote
-  redisFeedback.push(
-    client.sadd('voted:' + quoteid, 'user:' + userid, redis.print, function( err, res ) {
-      if (err) return cb(err);
-    })
-  );
+    var quoteData = {
+      'body'    : body,
+      'author'  : 'admin',
+      'created' : new Date().getTime(),
+      'votes'   : 0
+    };
 
-  // add the user's id to the list of users who voted this up
-  redisFeedback.push(
-    client.sadd('upvoted:' + quoteid, 'user:' + userid, function( err, res ) {
-      if (err) return cb(err);
-    })
-  );
-  
-  // increment the entry in the main score zset
-  redisFeedback.push(
-    client.zincrby('score:' + quoteid, 1, function( err, res ) {
-      if (err) return cb(err);
-    })
-  );
-
-  // Check this object for the `err` object. If `err`, then return to the error handler.
-  // Else, we should have the `redis.print` repsonses in case we want them.
-  return redisFeedback;
+    client.hmset('quote:' + quoteId, quoteData, function( err, res ) {
+      // do something....
+    });
+  });
 };
+
+var qShown = function( client, quoteId ) {
+  client.zincrby('quote:served', 1, 'quote:' + quoteId, function(e, r){});
+};
+
+
+exports.upvote   = qUpvote;
+exports.downvote = qDownvote;
+exports.create   = qCreate;
+exports.showed   = qShown;
+
 
 /**
  * Executes all necessary actions needed to record an Downvote from a user.
@@ -76,6 +53,8 @@ var quoteUpvote = function(client, userId, quoteId, cb) {
  * @return {[Function]}           Returns the results of the supplied callback
  *                                function after execution
  */
+
+/*
 var quoteDownvote = function(client, userId, quoteId, cb) {
   // increment the base quote hash objects score
   client.hincr(quoteid, 'downs', function( err, res ) {
@@ -97,48 +76,7 @@ var quoteDownvote = function(client, userId, quoteId, cb) {
     if (err) return cb(err);
   });
 };
-
-var errorHandler = function( err ) {
-  // handle this better, obviously...
-  console.log(err);
-};
-
-var handler = {
-  incr: function( err, res ) {
-    if err return 
-  }
-};
-
-
-var adduser = function() {
-    var user = app.guid();
-    client.hset('users', user);
-    return user;
-};
-
-var addquote = function(body, poster) {
-    var _id;
-    if (!body || !poster) return;
-
-    _id = client.hlen('quotes');
-
-    client.hmset('quotes', {
-        'id': _id + 1,
-        'body': body,
-        'poster': 'admin',
-        'time': new date().gettime(),
-        'ups': 1,
-        'downs': 0
-    });
-};
-
-//----------------
-// helper methods
-//----------------
-
-app.guid = function() {
-    return uuid.v1();
-};
+*/
 
 
 /*
@@ -159,7 +97,4 @@ app.guid = function() {
     Recent: ZSET
       - MEM=> quote:id
       - KEY=> timestamp
-
-
-
 */
