@@ -48,12 +48,6 @@ var getRandomSet = function(quoteAmount, returnQuote) {
     return new quoteObj(id, q.quotes[id]);
   };
 
-// Add quotes to the redis DB
-var addUsers = function(users) {
-  _.each(users, function(user, idx) {
-    client.incr('usercount');
-  });
-};
 
 var addEntriesToRedisDatabase = function(client, postedBy) {
   var poster = postedBy || "admin";
@@ -82,20 +76,18 @@ var addEntriesToRedisDatabase = function(client, postedBy) {
       'body'    : q.quotes[_id],
       'author'  : poster,
       'created' : new Date().getTime(),
-      'votes'   : 1
+      'score'   : 0
     };
 
-    // Set the base quote object
-    client.hmset(quoteKey, quoteObject, handleOutput(err, reply));
-
-    // Create an entry in the 'score' sorted set
-    client.zadd('score:', 1, quoteKey, handleOutput(err, reply));
+    client.hmset(quoteKey, quoteObject, handleOutput);
+    client.zadd('score:', 0, quoteKey, handleOutput);
+    client.incr('quote:', quoteKey, handleOutput);
   }
 
-  return rOutput;
+  //return rOutput;
 };
 
 exports.randomSet = getRandomSet;
-exports.getQuote = getSpecificQuote;
-exports.quote = quoteObj;
-exports.buildDb = addEntriesToRedisDatabase;
+exports.getQuote  = getSpecificQuote;
+exports.quote     = quoteObj;
+exports.buildDb   = addEntriesToRedisDatabase;
