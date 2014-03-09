@@ -54,24 +54,46 @@ var addUsers = function(users) {
     client.incr('usercount');
   });
 };
+
 var addEntriesToRedisDatabase = function(client, postedBy) {
   var poster = postedBy || "admin";
+  var date   = new Date();
+  var quoteObject;
+  var quoteKey;
+  var _id;
 
-  for ( var i = 0; i < q.quotes.length; i++ ) {
-    client.hmset('quote:' + i, {
-      'body': q.quotes[i],
-      'poster': poster,
-      'created': new Date().getTime(),
-      'ups': 0,
-      'downs': 0
-    });
+  // Container for redis console output
+  var rOutput = {
+    err: [],
+    replies: []
+  };
 
-    client.zadd('upvotes:' + i, 0);
-    client.zadd('downvotes:' + i, 0);
-    client.zadd('score:', 'quote:' + i)
+  function handleOutput( err, reply ) {
+    if (err) {
+      rOutput.err.push(err);
+    } else if (reply) {
+      rOutput.replies.push(reply);
+    }
   }
 
+  for ( var i = 0; i < q.quotes.length; i++ ) {
+    _id         = i;
+    quoteKey    = 'quote:' + _id;
+    quoteObject = {
+      'body'    : q.quotes[_id],
+      'author'  : poster,
+      'created' : _date.getTime(),
+      'votes'   : 1
+    };
 
+    // Set the base quote object
+    client.hmset(quoteKey, quoteObject, handleOutput(err, reply));
+
+    // Create an entry in the 'score' sorted set
+    client.zadd('score:', 1, quoteKey, handleOutput(err, reply));
+  }
+
+  return rOutput;
 };
 
 exports.randomSet = getRandomSet;
