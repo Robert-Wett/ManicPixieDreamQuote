@@ -7,7 +7,7 @@ var express      = require('express')
 ,   _            = require('underscore')
 ,   quoteFactory = require('./modules/quotes.js')
 ,   uuid         = require('node-uuid')
-,   r            = require('./modules/redisFunctions.js')
+,   redisHelper  = require('./modules/redisFunctions.js')
 ,   config       = require('./config.js').config;
 
 
