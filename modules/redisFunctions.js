@@ -2,19 +2,19 @@
 redis stuff
 ------------*/
 
-var qUpvote = function(client, quoteId) {
+var qUpvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
-  client.hincrby(quoteid, 1, 'score', function(err, res){});
+  client.hincrby(quoteId, 1, 'score', function(err, res){});
   client.zincrby('score:', 1, quoteId, function(err, res){});
 };
 
-var qDownvote = function(client, quoteId) {
+var qDownvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
-  client.hincrby(quoteid, -1, 'score', function(err, res){});
+  client.hincrby(quoteId, -1, 'score', function(err, res){});
   client.zincrby('score:', -1, quoteId, function(err, res){});
 };
 
-var qCreate = function(client, body) {
+var qCreate = function(client, userId, body) {
   client.incr('quote:', function( err, quoteId ) {
     if (err) return;
 
