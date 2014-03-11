@@ -41,7 +41,7 @@ $("#up").click(function() {
 
     $.ajax({
         type: "POST",
-        url: '/api/quote',
+        url: '/api/quote/',
         data: data,
         success: function( response ) {
             // Do nothing... or... something.
@@ -59,7 +59,7 @@ $("#down").click(function() {
 
     $.ajax({
         type: "POST",
-        url: '/api/quote',
+        url: '/api/quote/',
         data: data,
         success: function( response ) {
             // Do nothing... or... something.
@@ -77,7 +77,7 @@ $("#share").click(function() {
 
     $.ajax({
         type: "POST",
-        url: '/api/quote',
+        url: '/api/quote/',
         data: data,
         success: function( response ) {
             // Do nothing... or... something.
