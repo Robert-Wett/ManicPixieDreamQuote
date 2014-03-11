@@ -7,7 +7,7 @@ var express      = require('express')
 ,   _            = require('underscore')
 ,   quoteFactory = require('./modules/quotes.js')
 ,   uuid         = require('node-uuid')
-,   config       = require('./config.js');
+,   config       = require('./config.js').config;
 
 
 app.configure(function() {
