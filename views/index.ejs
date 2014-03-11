@@ -19,7 +19,7 @@
                 <div class="row-fluid">
                     <div class="span12">
                         <h1>
-                            <span class="quoteHolder">
+                            <span id="<%= quoteId %>" class="quoteHolder">
                                 <%= quoteBody %>
                             </span>
                         </h1>
@@ -27,9 +27,9 @@
                 </div>
             <div class="row-fluid">
                 <div class="span4 vote-buttons">
-                | <span class="small-button btn">&nbsp;Like&nbsp;</span> 
-                | <span class="small-button btn">&nbsp;Hate&nbsp;</span>
-                | <span class="small-button btn">&nbsp;Share&nbsp;</span>
+                | <span id="up" class="small-button btn">&nbsp;Like&nbsp;</span> 
+                | <span id="down" class="small-button btn">&nbsp;Hate&nbsp;</span>
+                | <span id="share" class="small-button btn">&nbsp;Share&nbsp;</span>
                 |
                 </div>
             </div>                

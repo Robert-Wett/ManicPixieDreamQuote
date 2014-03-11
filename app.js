@@ -7,11 +7,12 @@ var express      = require('express')
 ,   _            = require('underscore')
 ,   quoteFactory = require('./modules/quotes.js')
 ,   uuid         = require('node-uuid')
+,   r            = require('./modules/redisFunctions.js')
 ,   config       = require('./config.js').config;
 
 
 app.configure(function() {
-    app.set('port', process.env.PORT || 5000);
+    app.set('port', process.env.PORT || 3000);
     app.set('views', __dirname + '/views');
     app.set('view engine', 'ejs');
     app.use(require("connect-assets")());
@@ -43,7 +44,10 @@ app.configure(function() {
 // Default
 app.get('/', function(req, res) {
     var quote = quoteFactory.randomSet(config.min, true)[0];
-    res.render('index', {quoteBody: quote.body});
+    res.render('index', {
+        quoteBody: quote.body,
+        quoteId: quote.id
+    });
 });
 
 // Deep-Link
