@@ -2,16 +2,20 @@
 redis stuff
 ------------*/
 
+function redisCallback(error, reply) {
+  if (error) console.log('REDIS ERR: ' + error);
+};
+
 var qUpvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
-  client.hincrby(quoteId, 1, 'score', function(err, res){});
-  client.zincrby('score:', 1, quoteId, function(err, res){});
+  client.hincrby(quoteId, 1, 'score', redisCallback);
+  client.zincrby('score:', 1, quoteId, redisCallback);
 };
 
 var qDownvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
-  client.hincrby(quoteId, -1, 'score', function(err, res){});
-  client.zincrby('score:', -1, quoteId, function(err, res){});
+  client.hincrby(quoteId, -1, 'score', redisCallback);
+  client.zincrby('score:', -1, quoteId, redisCallback);
 };
 
 var qCreate = function(client, userId, body) {
@@ -29,6 +33,10 @@ var qCreate = function(client, userId, body) {
       // do something....
     });
   });
+};
+
+var uCreate = function(client, userId) {
+  client.sadd('users', 'user:' + userId, redisCallback);
 };
 
 var qShown = function( client, quoteId ) {
