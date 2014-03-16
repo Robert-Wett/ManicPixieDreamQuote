@@ -46,10 +46,10 @@ app.get('/', function(req, res) {
   if (!req.signedCookies['manicpixiedreamquote']) {
     var userCookieId = uuid.v1();
     res.cookie('manicpixiedreamquote', userCookieId, {signed: true});
-  } 
+  }
 
   var quote = quoteFactory.randomSet(config.min, true)[0];
-  res.render('index', {
+  res.render('test-index', {
     quoteBody: quote.body,
     quoteId: quote.id
   });
@@ -108,7 +108,6 @@ app.handlePost = function(userId, quoteId, action) {
   switch (action) {
     case 'share':
       return app.r.share(u, quoteId);
-      break;
     case 'up':
       redisHelper.upvote(client, userId, quoteId);
       break;

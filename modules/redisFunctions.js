@@ -4,7 +4,7 @@ redis stuff
 
 function redisCallback(error, reply) {
   if (error) console.log('REDIS ERR: ' + error);
-};
+}
 
 var qUpvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
@@ -24,13 +24,13 @@ var qCreate = function(client, userId, body) {
 
     var quoteData = {
       'body'    : body,
-      'author'  : 'admin',
+      'author'  : 'user:' + userId,
       'created' : new Date().getTime(),
       'votes'   : 0
     };
 
     client.hmset('quote:' + quoteId, quoteData, function( err, res ) {
-      // do something....
+      
     });
   });
 };
@@ -48,6 +48,22 @@ exports.upvote   = qUpvote;
 exports.downvote = qDownvote;
 exports.create   = qCreate;
 exports.showed   = qShown;
+
+/*
+var Q = require('q');
+
+function tester() {
+  var deferred = Q.defer();
+  setTimeout(function() {
+     deferred.resolve();
+  }, 10000); 
+  return deferred.promise;
+}
+
+
+tester().then(function() { alert("DONE") });
+
+*/
 
 
 /**

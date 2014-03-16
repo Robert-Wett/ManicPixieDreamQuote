@@ -1,21 +1,12 @@
-/*
-var QBANK = {};
-QBANK.quotes = {};
-
-QBANK.loadNewQuote = function() {
-    var url = '/api/quote';
-    $.ajax(url).success(function(data) {
-        QBANK.quotes[data.id] = data.
-        $(".quoteHolder").html(data);
-    });
-};
-*/
+var opts = {
+    baseColor: "#FFFAFA"
+}
 
 var loadNewQuote = function() {
+    $(".post-btn").css("color", opts.baseColor);
     var url = '/api/quote';
     $(".quoteHolder").fadeOut(250, function() {
         $.ajax(url).success(function(data) {
-            //$(".quoteHolder").html(data[body]);
             $(".quoteHolder").html(data[0].body);
             $(".quoteHolder").fadeIn(250);
         });
@@ -23,16 +14,35 @@ var loadNewQuote = function() {
 };
 
 
+/*
 $body = $("body");
 
+// Not even sure if this is loading.
+ * If we care that much, maybe add some test cases that have a 
+ * while(true){} loop and check for the class existence.
 $(document).on({
     ajaxStart: function() { $body.addClass("loading");    },
     ajaxStop : function() { $body.removeClass("loading"); }
 });
+ */
 
 
 $(document).ready(function() {
-    // Post Button Definitions
+
+
+    // Call/Execute the 'FitText' plugin.
+    $("#squeezeMe").fitText(1.2, { maxFontSize: '50px' });
+
+    $("#squeezeMe").click(function nextQuote() {
+        loadNewQuote();
+    });
+
+    $('#squeezeMe').swipe({
+        swipeUp: function mobileUp(event, direction, distance, duration) {
+
+        }
+    });
+
     $("#up").click(function() {
         var quoteId = $(".quoteHolder").attr("id");
         var data = {
@@ -45,8 +55,7 @@ $(document).ready(function() {
             url: '/api/quote/',
             data: data,
             success: function( response ) {
-                // Do nothing... or... something.
-                // Maybe set to green to show it was registered.
+                $("#up > span").animate({ color: '#338e2f'}, 500);
             }
         });
     });
@@ -63,13 +72,14 @@ $(document).ready(function() {
             url: '/api/quote/',
             data: data,
             success: function( response ) {
+                $("#down > span").animate({ color: '#338e2f'}, 500);
                 // Do nothing... or... something.
                 // Maybe set to red to show it was registered.
             }
         });
     });
 
-    $("#share").click(function() {
+    $("share").click(function() {
         var quoteId = $(".quoteHolder").attr("id");
         var data = {
             id: quoteId,
@@ -87,3 +97,15 @@ $(document).ready(function() {
         });
     });
 });
+
+var postUp = function postUp() {
+
+};
+
+var postDown = function postDown() {
+
+};
+
+var postShare = function postShare() {
+
+};
