@@ -7,6 +7,3 @@ modules/quoteBank.js
 
 # Key settings
 config.js
-
-# Redis dump files
-*.rdb
