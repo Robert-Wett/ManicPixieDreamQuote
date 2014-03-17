@@ -1,6 +1,14 @@
 var opts = {
-    baseColor: "#FFFAFA"
-}
+    baseColor: "#FFFAFA",
+    templateString :
+    '<div class="item">' +
+    '  <div class="fill">' +
+    '    <div id="%s" class="container">' +
+    '      <p style="font-size: 500%;color: white;">%s</p>' +
+    '    </div>' +
+    '  </div>' +
+    '</div>'
+};
 
 var loadNewQuote = function() {
     $(".post-btn").css("color", opts.baseColor);
@@ -37,9 +45,27 @@ $(document).ready(function() {
         loadNewQuote();
     });
 
-    $('#squeezeMe').swipe({
-        swipeUp: function mobileUp(event, direction, distance, duration) {
+    // http://stackoverflow.com/a/2625240/369706
+    $("#squeezeMe").mouseup(function() {
+        clearTimeout(pressTimer);
+        // Clear timeout
+        return false;
+    }).mousedown(function() {
+        // Set timeout
+        pressTimer = window.setTimeout( function () {
+            alert("LONGPRESS");
+        }, 750);
+        return false;
+    });
 
+    $('#squeezeMe').swipe({
+        swipeLeft:  function mobileLeft(event, direction, distance, duration) {
+            if (typeof(loadNewQuote) !== 'undefined') {
+                loadPrevQuote();
+            }
+        },
+        swipeRight: function mobileRight(event, direction, distance, duration) {
+            loadNewQuote();
         }
     });
 
@@ -98,14 +124,21 @@ $(document).ready(function() {
     });
 });
 
-var postUp = function postUp() {
+// oh buffer_ieee754.readIEEE754(buffer, offset, isBE, mLen, nBytes);
+// Need to override the carousel 'next' click and inject our loading logic.
 
+var carouselNextClick = function() {
+    var loadNext = function() {
+        $(".post-btn").css("color", opts.baseColor);
+        var url = '/api/quote';
+        $ajax(url).success(function(data) {
+            var quote   = data[0].body;
+            var quoteId = data[0].id;
+            var htmlToAppend = sprintf(opts.templateString, [quoteId, quote]);
+            $(".carousel-inner").append(htmlToAppend);
+        });
+    };
 };
 
-var postDown = function postDown() {
-
-};
-
-var postShare = function postShare() {
-
-};
+// IDEA!!!!
+// Call the above method on mouse-over - that way, mouse-click will just act as normal!
