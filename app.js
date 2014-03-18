@@ -43,16 +43,34 @@ app.configure(function() {
 
 // Default
 app.get('/', function(req, res) {
+  var quoteDict = {};
   if (!req.signedCookies['manicpixiedreamquote']) {
     var userCookieId = uuid.v1();
     res.cookie('manicpixiedreamquote', userCookieId, {signed: true});
   }
 
+  // Pull 5 quotes
+  var quoteSet = quoteFactory.randomSet(5, true);
+
+  for (var i = 0; i < quoteSet.length; i++) {
+    quoteDict[quoteSet[i].id] = quoteSet[i].body;
+  }
+
+  var firstQuote = quoteSet.shift();
+  var data = {
+    activeQuoteId: firstQuote.id,
+    activeQuoteBody: firstQuote.body,
+    quoteSet: quoteSet
+  };
+
+  res.render('carousel-index', data);
+  /*
   var quote = quoteFactory.randomSet(config.min, true)[0];
   res.render('test-index', {
     quoteBody: quote.body,
     quoteId: quote.id
   });
+*/
 });
 
 // Deep-Link

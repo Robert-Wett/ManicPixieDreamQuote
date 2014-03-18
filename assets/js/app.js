@@ -39,12 +39,17 @@ $(document).ready(function() {
 
 
     // Call/Execute the 'FitText' plugin.
-    $("#squeezeMe").fitText(1.2, { maxFontSize: '50px' });
-
-    $("#squeezeMe").click(function nextQuote() {
+    $(".item").fitText(1.2, { maxFontSize: '50px' });
+/*
+    $(".squeezeMe").click(function nextQuote() {
         loadNewQuote();
     });
 
+    $("#ccright").mouseup(function() {
+        carouselGetNext();
+    });
+*/
+    $('.carousel').carousel({ interval: false });
     // http://stackoverflow.com/a/2625240/369706
     $("#squeezeMe").mouseup(function() {
         clearTimeout(pressTimer);
@@ -127,17 +132,24 @@ $(document).ready(function() {
 // oh buffer_ieee754.readIEEE754(buffer, offset, isBE, mLen, nBytes);
 // Need to override the carousel 'next' click and inject our loading logic.
 
-var carouselNextClick = function() {
-    var loadNext = function() {
-        $(".post-btn").css("color", opts.baseColor);
-        var url = '/api/quote';
-        $ajax(url).success(function(data) {
-            var quote   = data[0].body;
-            var quoteId = data[0].id;
-            var htmlToAppend = sprintf(opts.templateString, [quoteId, quote]);
-            $(".carousel-inner").append(htmlToAppend);
-        });
-    };
+var carouselGetNext = function carouselGetNext() {
+    $(".post-btn").css("color", opts.baseColor);
+    var url = '/api/quote';
+    $.ajax(url).success(function(data) {
+        var quoteId   = data[0].id;
+        var quoteBody = data[0].body;
+        // This is fucking stupid, WHY DOESN'T THIS WORK? sprintf fucking sucks.
+        //var htmlToAppend = sprintf(opts.templateString, quoteId, quote);
+        var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
+                                '  <div class="fill">' +
+                                '    <div class="container">' +
+                                '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
+                                '    </div>' +
+                                '  </div>' +
+                                '</div>';
+        $(".carousel-inner").append(htmlToAppend);
+        $(".item").fitText(1.2, { maxFontSize: '50px' });
+    });
 };
 
 // IDEA!!!!

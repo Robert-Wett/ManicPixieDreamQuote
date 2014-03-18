@@ -1,0 +1,12 @@
+# Ignore NPM mods
+node_modules/*
+
+# Content is king..this actually took some time
+# to do, so for now I'd like to keep it private.
+modules/quoteBank.js
+
+# Key settings
+config.js
+
+# Redis dump files
+./dump.rdb
