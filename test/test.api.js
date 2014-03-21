@@ -32,15 +32,26 @@ describe('Redis Functions', function() {
     });
 
     it('does\'nt allow multiple votes', function(done) {
-
+        // Add 1 to the voted count
+        client.sadd('quote:voted:1', users.bob, new Date.now());
+        // Get the current length/num of the quotes voted list
+        var currentCount = client.scard('quote:voted:1');
+        // Add another.. are we just testing set behavior????
+        client.sadd('quote:voted:1', users.bob, new Date.now());
+        var newCount = client.sget('quote:voted:1');
+        expect(currentCount).to.equal(newCount);
     });
 
     it('increases the vote count by 1', function(done) {
-
+        var currentCount = client.scard('quote:voted:1');
+        client.sadd('quote:voted:1', 'user:jackfantastic', new Date.now());
+        expect(currentCount).to.equal(currentCount + 1);
     });
 
     it('decreases the vote count by 1', function(done) {
-
+        var currentCount = client.scard('quote:voted:1');
+        client.sadd('quote:voted:1', 'user:jackfantastic', new Date.now());
+        expect(currentCount).to.equal(currentCount + 1);
     });
 
     it('doesn\'t decrease the vote count to negatives', function(done) {
