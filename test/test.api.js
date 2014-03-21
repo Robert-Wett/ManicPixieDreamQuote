@@ -31,12 +31,24 @@ describe('Redis Functions', function() {
         client.sadd('users', users);
     });
 
+    it('add 1 to up table and 1 to hash vote count', function(done) {
+        // Import redisFunction CRUD ops
+        
+    });
+
+    it('add 1 to down table and -1 to hash vote count', function(done) {
+        // Import redisFunction CRUD ops
+        
+    });
+
+
     it('does\'nt allow multiple votes', function(done) {
         // Add 1 to the voted count
         client.sadd('quote:voted:1', users.bob, new Date.now());
         // Get the current length/num of the quotes voted list
         var currentCount = client.scard('quote:voted:1');
         // Add another.. are we just testing set behavior????
+        //... GOTO LINE 34
         client.sadd('quote:voted:1', users.bob, new Date.now());
         var newCount = client.sget('quote:voted:1');
         expect(currentCount).to.equal(newCount);
