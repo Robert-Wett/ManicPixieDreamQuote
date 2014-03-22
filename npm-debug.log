@@ -1,0 +1,29 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   'fakeredis' ]
+2 info using npm@1.3.2
+3 info using node@v0.10.13
+4 verbose node symlink /usr/local/bin/node
+5 error Error: Invalid name: "QuotesFromGirls"
+5 error     at ensureValidName (/opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/node_modules/normalize-package-data/lib/fixer.js:281:15)
+5 error     at Object.module.exports.fixNameField (/opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/node_modules/normalize-package-data/lib/fixer.js:196:5)
+5 error     at /opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/node_modules/normalize-package-data/lib/normalize.js:29:38
+5 error     at Array.forEach (native)
+5 error     at normalize (/opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/node_modules/normalize-package-data/lib/normalize.js:28:15)
+5 error     at final (/opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/read-json.js:310:33)
+5 error     at then (/opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/read-json.js:124:33)
+5 error     at /opt/node-v0.10.13-linux-x86/lib/node_modules/npm/node_modules/read-package-json/read-json.js:299:40
+5 error     at fs.js:266:14
+5 error     at Object.oncomplete (fs.js:107:15)
+6 error If you need help, you may report this log at:
+6 error     <http://github.com/isaacs/npm/issues>
+6 error or email it to:
+6 error     <npm-@googlegroups.com>
+7 error System Linux 3.2.0-23-generic-pae
+8 error command "/usr/local/bin/node" "/usr/local/bin/npm" "install" "fakeredis"
+9 error cwd /vagrant/ManicPixieDreamQuote
+10 error node -v v0.10.13
+11 error npm -v 1.3.2
+12 verbose exit [ 1, true ]
