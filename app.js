@@ -1,14 +1,15 @@
-var express      = require('express')
-,   app          = express()
-,   server       = require('http').createServer(app)
-,   redis        = require('redis')
-,   client       = redis.createClient()
-,   path         = require('path')
-,   _            = require('underscore')
-,   quoteFactory = require('./modules/quotes.js')
-,   uuid         = require('node-uuid')
-,   redisHelper  = require('./modules/redisFunctions.js')
-,   config       = require('./config.js').config;
+var express      = require('express');
+var app          = express();
+var server       = require('http').createServer(app);
+var redis        = require('redis');
+var client       = redis.createClient();
+var path         = require('path');
+var _            = require('underscore');
+var quoteFactory = require('./modules/quotes.js');
+var uuid         = require('node-uuid');
+var redisHelper  = require('./modules/redisFunctions.js');
+var mongoose     = require('mongoose').connect('mongodb://localhost/quotes');
+var config       = require('./config.js').config;
 
 
 app.configure(function() {
@@ -49,8 +50,8 @@ app.get('/', function(req, res) {
     res.cookie('manicpixiedreamquote', userCookieId, {signed: true});
   }
 
-  // Pull 5 quotes
-  var quoteSet = quoteFactory.randomSet(5, true);
+  // Pull 2 quotes
+  var quoteSet = quoteFactory.randomSet(2, true);
 
   for (var i = 0; i < quoteSet.length; i++) {
     quoteDict[quoteSet[i].id] = quoteSet[i].body;
