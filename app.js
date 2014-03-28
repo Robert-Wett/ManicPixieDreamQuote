@@ -8,9 +8,60 @@ var _            = require('underscore');
 var quoteFactory = require('./modules/quotes.js');
 var uuid         = require('node-uuid');
 var redisHelper  = require('./modules/redisFunctions.js');
-var mongoose     = require('mongoose').connect('mongodb://localhost/quotes');
+//var mongoose     = require('mongoose').connect('mongodb://localhost/quotes');
+//var Schema       = mongoose.Schema;
 var config       = require('./config.js').config;
+var uri          = config.mongoLabsUri;
 
+/*
+var mongoose = require('mongoose');
+var Schema   = mongoose.Schema;
+
+var quoteSchema = new Schema({
+    _id: String,
+    body: String,
+    author: String,
+    comments: [{ body: String, date: Date }],
+    date: { type: Date, default: Date.now },
+    hidden: Boolean,
+    meta: {
+        votes: Number,
+        favs: Number,
+        shares: Number
+    }
+});
+ */
+/*
+mongoose.connect(uri);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback() {
+  var quoteSchema = new Schema({
+      _id: String,
+      body: String,
+      author: String,
+      comments: [{ body: String, date: Date }],
+      date: { type: Date, default: Date.now },
+      hidden: Boolean,
+      meta: {
+          votes: Number,
+          favs: Number,
+          shares: Number
+      }
+  });
+
+  var AccountSchema = new Schema({
+    email:    { type: String, unique: true },
+    password: { type: String },
+    name: {
+      first:  { type: String},
+      last:   { type: String }
+    },
+    status:   [Status], // My own status updates only
+    activity: [Status]
+  });
+});
+*/
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
@@ -82,7 +133,7 @@ app.get('/quote/:id', function(req, res) {
 
 
 
-//                    _____ _____ 
+//                    _____ _____  
 //              /\   |  __ \_   _|
 //  ______     /  \  | |__) || |  
 // |______|   / /\ \ |  ___/ | |  

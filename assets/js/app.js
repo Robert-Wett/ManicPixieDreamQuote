@@ -40,17 +40,10 @@ $(document).ready(function() {
 
     // Call/Execute the 'FitText' plugin.
     $(".item").fitText(1.2, { maxFontSize: '50px' });
-/*
-    $(".squeezeMe").click(function nextQuote() {
-        loadNewQuote();
-    });
 
-    $("#ccright").mouseup(function() {
-        carouselGetNext();
-    });
-*/
     $('.carousel').carousel({ interval: false });
     // http://stackoverflow.com/a/2625240/369706
+/*
     $("#squeezeMe").mouseup(function() {
         clearTimeout(pressTimer);
         // Clear timeout
@@ -73,9 +66,11 @@ $(document).ready(function() {
             loadNewQuote();
         }
     });
+*/
 
     $("#up").click(function() {
-        var quoteId = $(".quoteHolder").attr("id");
+        //var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
         var data = {
             id: quoteId,
             action: 'up'
@@ -87,12 +82,13 @@ $(document).ready(function() {
             data: data,
             success: function( response ) {
                 $("#up > span").animate({ color: '#338e2f'}, 500);
+                $("#down > span").animate({ "color": opts.baseColor });
             }
         });
     });
 
     $("#down").click(function() {
-        var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
         var data = {
             id: quoteId,
             action: 'down'
@@ -104,14 +100,14 @@ $(document).ready(function() {
             data: data,
             success: function( response ) {
                 $("#down > span").animate({ color: '#338e2f'}, 500);
-                // Do nothing... or... something.
-                // Maybe set to red to show it was registered.
+                $("#up > span").animate({ "color": opts.baseColor });
             }
         });
     });
 
+// Ignore for now
     $("share").click(function() {
-        var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
         var data = {
             id: quoteId,
             action: 'share'
@@ -129,17 +125,14 @@ $(document).ready(function() {
     });
 });
 
-// oh buffer_ieee754.readIEEE754(buffer, offset, isBE, mLen, nBytes);
-// Need to override the carousel 'next' click and inject our loading logic.
 
+// Need to override the carousel 'next' click and inject our loading logic.
 var carouselGetNext = function carouselGetNext() {
     $(".post-btn").css("color", opts.baseColor);
     var url = '/api/quote';
     $.ajax(url).success(function(data) {
         var quoteId   = data[0].id;
         var quoteBody = data[0].body;
-        // This is fucking stupid, WHY DOESN'T THIS WORK? sprintf fucking sucks.
-        //var htmlToAppend = sprintf(opts.templateString, quoteId, quote);
         var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
                                 '  <div class="fill">' +
                                 '    <div class="container">' +
