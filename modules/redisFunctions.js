@@ -8,12 +8,14 @@ function redisCallback(error, reply) {
 
 var qUpvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
+  console.log('Upvoting ' + quoteId);
   client.hincrby(quoteId, 'score', 1, redisCallback);
   client.zincrby('score:', 1, quoteId, redisCallback);
 };
 
 var qDownvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
+  console.log('Downvoting ' + quoteId);
   client.hincrby(quoteId, 'score', -1, redisCallback);
   client.zincrby('score:', -1, quoteId, redisCallback);
 };
