@@ -1,5 +1,7 @@
 var opts = {
     baseColor: "#FFFAFA",
+    likeGreen: "#338E2F",
+    lastId: "",
     templateString :
     '<div class="item">' +
     '  <div class="fill">' +
@@ -36,21 +38,12 @@ $(document).on({
 
 
 $(document).ready(function() {
-
-
     // Call/Execute the 'FitText' plugin.
     $(".item").fitText(1.2, { maxFontSize: '50px' });
-/*
-    $(".squeezeMe").click(function nextQuote() {
-        loadNewQuote();
-    });
 
-    $("#ccright").mouseup(function() {
-        carouselGetNext();
-    });
-*/
     $('.carousel').carousel({ interval: false });
     // http://stackoverflow.com/a/2625240/369706
+/*
     $("#squeezeMe").mouseup(function() {
         clearTimeout(pressTimer);
         // Clear timeout
@@ -73,9 +66,11 @@ $(document).ready(function() {
             loadNewQuote();
         }
     });
+*/
 
     $("#up").click(function() {
-        var quoteId = $(".quoteHolder").attr("id");
+        //var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
         var data = {
             id: quoteId,
             action: 'up'
@@ -86,13 +81,14 @@ $(document).ready(function() {
             url: '/api/quote/',
             data: data,
             success: function( response ) {
-                $("#up > span").animate({ color: '#338e2f'}, 500);
+                $("#up > span").animate({ color: opts.likeGreen}, 500);
+                $("#down > span").animate({ "color": opts.baseColor });
             }
         });
     });
 
     $("#down").click(function() {
-        var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
         var data = {
             id: quoteId,
             action: 'down'
@@ -104,14 +100,14 @@ $(document).ready(function() {
             data: data,
             success: function( response ) {
                 $("#down > span").animate({ color: '#338e2f'}, 500);
-                // Do nothing... or... something.
-                // Maybe set to red to show it was registered.
+                $("#up > span").animate({ "color": opts.baseColor });
             }
         });
     });
 
+// Ignore for now
     $("share").click(function() {
-        var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
         var data = {
             id: quoteId,
             action: 'share'
@@ -129,28 +125,40 @@ $(document).ready(function() {
     });
 });
 
-// oh buffer_ieee754.readIEEE754(buffer, offset, isBE, mLen, nBytes);
-// Need to override the carousel 'next' click and inject our loading logic.
 
+// Need to override the carousel 'next' click and inject our loading logic.
 var carouselGetNext = function carouselGetNext() {
+
+    // We only want to add a new quote if we reach the second to last added quote.
+    // Keeping track of this, we can only make an ajax call if we're at the end of
+    // the list.
+    var lastQuote    = $(".item:nth-last-child(2)").attr("id");
+    var currentQuote = $(".active").attr("id");
+
+    // Reset the interaction buttons back to white, or whatever the base color is.
+    // We do this no matter what - we need to check against redis to see if we've 
+    // voted on this already, and highlight the appropriate buttons.
     $(".post-btn").css("color", opts.baseColor);
-    var url = '/api/quote';
-    $.ajax(url).success(function(data) {
-        var quoteId   = data[0].id;
-        var quoteBody = data[0].body;
-        // This is fucking stupid, WHY DOESN'T THIS WORK? sprintf fucking sucks.
-        //var htmlToAppend = sprintf(opts.templateString, quoteId, quote);
-        var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
-                                '  <div class="fill">' +
-                                '    <div class="container">' +
-                                '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
-                                '    </div>' +
-                                '  </div>' +
-                                '</div>';
-        $(".carousel-inner").append(htmlToAppend);
-        $(".item").fitText(1.2, { maxFontSize: '50px' });
-    });
+
+    // Only make an ajax call if we are on the second to last quote
+    if (lastQuote === currentQuote) {
+        var url = '/api/quote';
+        $.ajax(url).success(function(data) {
+            var quoteId   = data[0].id;
+            var quoteBody = data[0].body;
+            var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
+            '  <div class="fill">' +
+            '    <div class="container">' +
+            '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>';
+            $(".carousel-inner").append(htmlToAppend);
+            $(".item").fitText(1.2, { maxFontSize: '50px' });
+        });
+    }
 };
 
-// IDEA!!!!
-// Call the above method on mouse-over - that way, mouse-click will just act as normal!
+var carouselGetPrevious = function carouselGetPrevious() {
+    $(".post-btn").css("color", opts.baseColor);
+};

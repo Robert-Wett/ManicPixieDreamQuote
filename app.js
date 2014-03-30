@@ -1,15 +1,67 @@
-var express      = require('express')
-,   app          = express()
-,   server       = require('http').createServer(app)
-,   redis        = require('redis')
-,   client       = redis.createClient()
-,   path         = require('path')
-,   _            = require('underscore')
-,   quoteFactory = require('./modules/quotes.js')
-,   uuid         = require('node-uuid')
-,   redisHelper  = require('./modules/redisFunctions.js')
-,   config       = require('./config.js').config;
+var express      = require('express');
+var app          = express();
+var server       = require('http').createServer(app);
+var redis        = require('redis');
+var client       = redis.createClient();
+var path         = require('path');
+var _            = require('underscore');
+var quoteFactory = require('./modules/quotes.js');
+var uuid         = require('node-uuid');
+var redisHelper  = require('./modules/redisFunctions.js');
+//var mongoose     = require('mongoose').connect('mongodb://localhost/quotes');
+//var Schema       = mongoose.Schema;
+var config       = require('./config.js').config;
+var uri          = config.mongoLabsUri;
 
+/*
+var mongoose = require('mongoose');
+var Schema   = mongoose.Schema;
+
+var quoteSchema = new Schema({
+    _id: String,
+    body: String,
+    author: String,
+    comments: [{ body: String, date: Date }],
+    date: { type: Date, default: Date.now },
+    hidden: Boolean,
+    meta: {
+        votes: Number,
+        favs: Number,
+        shares: Number
+    }
+});
+ */
+/*
+mongoose.connect(uri);
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback() {
+  var quoteSchema = new Schema({
+      _id: String,
+      body: String,
+      author: String,
+      comments: [{ body: String, date: Date }],
+      date: { type: Date, default: Date.now },
+      hidden: Boolean,
+      meta: {
+          votes: Number,
+          favs: Number,
+          shares: Number
+      }
+  });
+
+  var AccountSchema = new Schema({
+    email:    { type: String, unique: true },
+    password: { type: String },
+    name: {
+      first:  { type: String},
+      last:   { type: String }
+    },
+    status:   [Status], // My own status updates only
+    activity: [Status]
+  });
+});
+*/
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
@@ -49,8 +101,8 @@ app.get('/', function(req, res) {
     res.cookie('manicpixiedreamquote', userCookieId, {signed: true});
   }
 
-  // Pull 5 quotes
-  var quoteSet = quoteFactory.randomSet(5, true);
+  // Pull 2 quotes
+  var quoteSet = quoteFactory.randomSet(2, true);
 
   for (var i = 0; i < quoteSet.length; i++) {
     quoteDict[quoteSet[i].id] = quoteSet[i].body;
@@ -81,7 +133,7 @@ app.get('/quote/:id', function(req, res) {
 
 
 
-//                    _____ _____ 
+//                    _____ _____  
 //              /\   |  __ \_   _|
 //  ______     /  \  | |__) || |  
 // |______|   / /\ \ |  ___/ | |  
@@ -148,11 +200,17 @@ client.on("error", function (err) {
 // |_____/ \__\__,_|_|   \__| |_|\__|  \__,_| .__/ 
 //                                          | |    
 //                                          |_|    
-quoteFactory.buildDb(client);
+var redisOutput = quoteFactory.buildDb(client);
 
-server.listen(app.get('port'), function() {
-  console.log("Express server listening on port " + app.get('port'));
-});
+if (redisOutput.err.length > 0)
+  console.log("".join(redisOutput.err));
+else {
+  console.log("Redis commands executed with no errors - starting server.");
+  server.listen(app.get('port'), function() {
+    console.log("Express server listening on port " + app.get('port'));
+  });
+}
+
 
 
 
