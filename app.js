@@ -12,7 +12,9 @@ var redisHelper  = require('./modules/redisFunctions.js');
 //var Schema       = mongoose.Schema;
 var config       = require('./config.js').config;
 var uri          = config.mongoLabsUri;
-
+/*
+ * MONGO/MONGOOSE STUFF - TODO
+ */
 /*
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
