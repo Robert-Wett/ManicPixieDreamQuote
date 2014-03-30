@@ -45,13 +45,13 @@ var carouselGetNext = function carouselGetNext() {
         $.ajax(url).success(function(data) {
             var quoteId   = data[0].id;
             var quoteBody = data[0].body;
-            var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
-            '  <div class="fill">' +
-            '    <div class="container">' +
-            '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
-            '    </div>' +
-            '  </div>' +
-            '</div>';
+            var htmlToAppend =  '<div id="'+ quoteId +'" class="item">' +
+                                '  <div class="fill">' +
+                                '    <div class="container">' +
+                                '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
+                                '    </div>' +
+                                '  </div>' +
+                                '</div>';
             $(".carousel-inner").append(htmlToAppend);
             $(".item").fitText(1.2, { maxFontSize: '50px' });
         });

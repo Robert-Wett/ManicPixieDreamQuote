@@ -12,58 +12,7 @@ var redisHelper  = require('./modules/redisFunctions.js');
 //var Schema       = mongoose.Schema;
 var config       = require('./config.js').config;
 var uri          = config.mongoLabsUri;
-/*
- * MONGO/MONGOOSE STUFF - TODO
- */
-/*
-var mongoose = require('mongoose');
-var Schema   = mongoose.Schema;
 
-var quoteSchema = new Schema({
-    _id: String,
-    body: String,
-    author: String,
-    comments: [{ body: String, date: Date }],
-    date: { type: Date, default: Date.now },
-    hidden: Boolean,
-    meta: {
-        votes: Number,
-        favs: Number,
-        shares: Number
-    }
-});
- */
-/*
-mongoose.connect(uri);
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback() {
-  var quoteSchema = new Schema({
-      _id: String,
-      body: String,
-      author: String,
-      comments: [{ body: String, date: Date }],
-      date: { type: Date, default: Date.now },
-      hidden: Boolean,
-      meta: {
-          votes: Number,
-          favs: Number,
-          shares: Number
-      }
-  });
-
-  var AccountSchema = new Schema({
-    email:    { type: String, unique: true },
-    password: { type: String },
-    name: {
-      first:  { type: String},
-      last:   { type: String }
-    },
-    status:   [Status], // My own status updates only
-    activity: [Status]
-  });
-});
-*/
 
 app.configure(function() {
   app.set('port', process.env.PORT || 3000);
@@ -141,7 +90,6 @@ app.get('/api/quote', function(req, res) {
     "Access-Control-Allow-Origin": "*"
   });
   res.write(JSON.stringify(quoteFactory.randomSet(config.min, true)));
-  res.end();
 });
 
 // Pull a specific quote
@@ -151,7 +99,6 @@ app.get('/api/quote/:id', function(req, res) {
       "Access-Control-Allow-Origin": "*"
     });
   res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
-  res.end();
 });
 
 // Testing, kind of - just returns the query params as a quote.
@@ -168,7 +115,6 @@ app.post('/api/quote/', function(req, res) {
   var action   = req.body.action;
 
   app.handlePost(userId, quoteId, action);
-  res.end();
 });
 
 //----------------
