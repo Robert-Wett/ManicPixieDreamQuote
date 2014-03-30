@@ -1,5 +1,7 @@
 var opts = {
     baseColor: "#FFFAFA",
+    likeGreen: "#338E2F",
+    lastId: "",
     templateString :
     '<div class="item">' +
     '  <div class="fill">' +
@@ -36,8 +38,6 @@ $(document).on({
 
 
 $(document).ready(function() {
-
-
     // Call/Execute the 'FitText' plugin.
     $(".item").fitText(1.2, { maxFontSize: '50px' });
 
@@ -81,7 +81,7 @@ $(document).ready(function() {
             url: '/api/quote/',
             data: data,
             success: function( response ) {
-                $("#up > span").animate({ color: '#338e2f'}, 500);
+                $("#up > span").animate({ color: opts.likeGreen}, 500);
                 $("#down > span").animate({ "color": opts.baseColor });
             }
         });
@@ -128,22 +128,37 @@ $(document).ready(function() {
 
 // Need to override the carousel 'next' click and inject our loading logic.
 var carouselGetNext = function carouselGetNext() {
+
+    // We only want to add a new quote if we reach the second to last added quote.
+    // Keeping track of this, we can only make an ajax call if we're at the end of
+    // the list.
+    var lastQuote    = $(".item:nth-last-child(2)").attr("id");
+    var currentQuote = $(".active").attr("id");
+
+    // Reset the interaction buttons back to white, or whatever the base color is.
+    // We do this no matter what - we need to check against redis to see if we've 
+    // voted on this already, and highlight the appropriate buttons.
     $(".post-btn").css("color", opts.baseColor);
-    var url = '/api/quote';
-    $.ajax(url).success(function(data) {
-        var quoteId   = data[0].id;
-        var quoteBody = data[0].body;
-        var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
-                                '  <div class="fill">' +
-                                '    <div class="container">' +
-                                '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
-                                '    </div>' +
-                                '  </div>' +
-                                '</div>';
-        $(".carousel-inner").append(htmlToAppend);
-        $(".item").fitText(1.2, { maxFontSize: '50px' });
-    });
+
+    // Only make an ajax call if we are on the second to last quote
+    if (lastQuote === currentQuote) {
+        var url = '/api/quote';
+        $.ajax(url).success(function(data) {
+            var quoteId   = data[0].id;
+            var quoteBody = data[0].body;
+            var htmlToAppend =     '<div id="'+ quoteId +'" class="item">' +
+            '  <div class="fill">' +
+            '    <div class="container">' +
+            '      <p id="squeezeMe" class="quoteHolder">'+ quoteBody +'</p>' +
+            '    </div>' +
+            '  </div>' +
+            '</div>';
+            $(".carousel-inner").append(htmlToAppend);
+            $(".item").fitText(1.2, { maxFontSize: '50px' });
+        });
+    }
 };
 
-// IDEA!!!!
-// Call the above method on mouse-over - that way, mouse-click will just act as normal!
+var carouselGetPrevious = function carouselGetPrevious() {
+    $(".post-btn").css("color", opts.baseColor);
+};

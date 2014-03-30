@@ -8,13 +8,13 @@ function redisCallback(error, reply) {
 
 var qUpvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
-  client.hincrby(quoteId, 1, 'score', redisCallback);
+  client.hincrby(quoteId, 'score', 1, redisCallback);
   client.zincrby('score:', 1, quoteId, redisCallback);
 };
 
 var qDownvote = function(client, userId, quoteId) {
   quoteId = 'quote:' + quoteId;
-  client.hincrby(quoteId, -1, 'score', redisCallback);
+  client.hincrby(quoteId, 'score', -1, redisCallback);
   client.zincrby('score:', -1, quoteId, redisCallback);
 };
 
@@ -29,9 +29,7 @@ var qCreate = function(client, userId, body) {
       'votes'   : 0
     };
 
-    client.hmset('quote:' + quoteId, quoteData, function( err, res ) {
-      
-    });
+    client.hmset('quote:' + quoteId, quoteData, function( err, res ) {});
   });
 };
 

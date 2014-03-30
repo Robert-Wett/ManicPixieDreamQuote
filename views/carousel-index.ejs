@@ -14,7 +14,6 @@
         <%- js("jquery-ui.min") %>
         <%- js("bootstrap.min") %>
         <%- js("jquery.fittext") %>
-        <%- js("sprintf") %>
         <script src="js/app.js"></script>
         <title>Such Whimsy</title>
     </head>
@@ -48,7 +47,7 @@
             <% } %>
             </div>
             <div class="pull-center">
-              <a class="carousel-control left" href="#myCarousel" data-slide="prev">‹</a>
+              <a class="carousel-control left" href="#myCarousel" data-slide="prev" onclick="carouselGetPrevious()">‹</a>
               <a class="carousel-control right" href="#myCarousel" data-slide="next" onclick="carouselGetNext()">›</a>
             </div>
             <div class="row-fluid">
@@ -60,6 +59,6 @@
                 </div>
             </div> 
           </div>
-        </div>        
+        </div>
     </body>
 </html>

@@ -200,11 +200,17 @@ client.on("error", function (err) {
 // |_____/ \__\__,_|_|   \__| |_|\__|  \__,_| .__/ 
 //                                          | |    
 //                                          |_|    
-quoteFactory.buildDb(client);
+var redisOutput = quoteFactory.buildDb(client);
 
-server.listen(app.get('port'), function() {
-  console.log("Express server listening on port " + app.get('port'));
-});
+if (redisOutput.err.length > 0)
+  console.log("".join(redisOutput.err));
+else {
+  console.log("Redis commands executed with no errors - starting server.");
+  server.listen(app.get('port'), function() {
+    console.log("Express server listening on port " + app.get('port'));
+  });
+}
+
 
 
 

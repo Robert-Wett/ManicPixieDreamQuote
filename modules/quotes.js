@@ -80,11 +80,13 @@ var addEntriesToRedisDatabase = function(client, postedBy) {
     };
 
     client.hmset(quoteKey, quoteObject, handleOutput);
-    client.zadd('score:', 0, quoteKey, handleOutput);
-    client.incr('quote:', quoteKey, handleOutput);
+    client.zadd('score:', 0.0, quoteKey, handleOutput);
+    client.sadd('voted:' + _id, 'admin');
+    //client.zadd('voted:', )
+    //client.incr('quote:', quoteKey, handleOutput);
   }
 
-  //return rOutput;
+  return rOutput;
 };
 
 exports.randomSet = getRandomSet;
