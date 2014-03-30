@@ -1,15 +1,15 @@
 var opts = {
     baseColor: "#FFFAFA",
-    likeGreen: "#338E2F",
+    upColor: "#338E2F",
+    downColor: "#E31B47",
     lastId: "",
-    templateString :
-    '<div class="item">' +
-    '  <div class="fill">' +
-    '    <div id="%s" class="container">' +
-    '      <p style="font-size: 500%;color: white;">%s</p>' +
-    '    </div>' +
-    '  </div>' +
-    '</div>'
+    templateString : '<div class="item">' +
+                     '  <div class="fill">' +
+                     '    <div id="%s" class="container">' +
+                     '      <p style="font-size: 500%;color: white;">%s</p>' +
+                     '    </div>' +
+                     '  </div>' +
+                     '</div>'
 };
 
 var loadNewQuote = function() {
@@ -23,107 +23,6 @@ var loadNewQuote = function() {
     });
 };
 
-
-/*
-$body = $("body");
-
-// Not even sure if this is loading.
- * If we care that much, maybe add some test cases that have a 
- * while(true){} loop and check for the class existence.
-$(document).on({
-    ajaxStart: function() { $body.addClass("loading");    },
-    ajaxStop : function() { $body.removeClass("loading"); }
-});
- */
-
-
-$(document).ready(function() {
-    // Call/Execute the 'FitText' plugin.
-    $(".item").fitText(1.2, { maxFontSize: '50px' });
-
-    $('.carousel').carousel({ interval: false });
-    // http://stackoverflow.com/a/2625240/369706
-/*
-    $("#squeezeMe").mouseup(function() {
-        clearTimeout(pressTimer);
-        // Clear timeout
-        return false;
-    }).mousedown(function() {
-        // Set timeout
-        pressTimer = window.setTimeout( function () {
-            alert("LONGPRESS");
-        }, 750);
-        return false;
-    });
-
-    $('#squeezeMe').swipe({
-        swipeLeft:  function mobileLeft(event, direction, distance, duration) {
-            if (typeof(loadNewQuote) !== 'undefined') {
-                loadPrevQuote();
-            }
-        },
-        swipeRight: function mobileRight(event, direction, distance, duration) {
-            loadNewQuote();
-        }
-    });
-*/
-
-    $("#up").click(function() {
-        //var quoteId = $(".quoteHolder").attr("id");
-        var quoteId = $(".active").attr("id");
-        var data = {
-            id: quoteId,
-            action: 'up'
-        };
-
-        $.ajax({
-            type: "POST",
-            url: '/api/quote/',
-            data: data,
-            success: function( response ) {
-                $("#up > span").animate({ color: opts.likeGreen}, 500);
-                $("#down > span").animate({ "color": opts.baseColor });
-            }
-        });
-    });
-
-    $("#down").click(function() {
-        var quoteId = $(".active").attr("id");
-        var data = {
-            id: quoteId,
-            action: 'down'
-        };
-
-        $.ajax({
-            type: "POST",
-            url: '/api/quote/',
-            data: data,
-            success: function( response ) {
-                $("#down > span").animate({ color: '#338e2f'}, 500);
-                $("#up > span").animate({ "color": opts.baseColor });
-            }
-        });
-    });
-
-// Ignore for now
-    $("share").click(function() {
-        var quoteId = $(".active").attr("id");
-        var data = {
-            id: quoteId,
-            action: 'share'
-        };
-
-        $.ajax({
-            type: "POST",
-            url: '/api/quote/',
-            data: data,
-            success: function( response ) {
-                // Do nothing... or... something.
-                // Maybe set to blue to show it was registered.
-            }
-        });
-    });
-});
 
 
 // Need to override the carousel 'next' click and inject our loading logic.
@@ -162,3 +61,76 @@ var carouselGetNext = function carouselGetNext() {
 var carouselGetPrevious = function carouselGetPrevious() {
     $(".post-btn").css("color", opts.baseColor);
 };
+
+
+
+/*****************
+**** On Load *****
+******************/
+$(document).ready(function() {
+    // Call/Execute the 'FitText' plugin.
+    $(".item").fitText(1.2, { maxFontSize: '50px' });
+
+    // Stop the auto-loading behavior of bootstrap's carousel
+    $('.carousel').carousel({ interval: false });
+
+    /*
+     * Post Buttons
+     */
+    $("#up").click(function() {
+        //var quoteId = $(".quoteHolder").attr("id");
+        var quoteId = $(".active").attr("id");
+        var data = {
+            id: quoteId,
+            action: 'up'
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '/api/quote/',
+            data: data,
+            success: function( response ) {
+                $("#up > span").animate({ color: opts.upColor}, 500);
+                $("#down > span").animate({ "color": opts.baseColor });
+            }
+        });
+    });
+
+    $("#down").click(function() {
+        var quoteId = $(".active").attr("id");
+        var data = {
+            id: quoteId,
+            action: 'down'
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '/api/quote/',
+            data: data,
+            success: function( response ) {
+                $("#down > span").animate({ color: opts.downColor}, 500);
+                $("#up > span").animate({ "color": opts.baseColor });
+            }
+        });
+    });
+
+// Ignore for now
+    $("share").click(function() {
+        var quoteId = $(".active").attr("id");
+        var data = {
+            id: quoteId,
+            action: 'share'
+        };
+
+        $.ajax({
+            type: "POST",
+            url: '/api/quote/',
+            data: data,
+            success: function( response ) {
+                // Do nothing... or... something.
+                // Maybe set to blue to show it was registered.
+            }
+        });
+    });
+});
+
