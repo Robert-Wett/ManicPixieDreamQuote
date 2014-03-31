@@ -1,17 +1,21 @@
-var express      = require('express');
-var app          = express();
-var server       = require('http').createServer(app);
-var redis        = require('redis');
-var client       = redis.createClient();
-var path         = require('path');
-var _            = require('underscore');
-var quoteFactory = require('./modules/quotes.js');
-var uuid         = require('node-uuid');
-var redisHelper  = require('./modules/redisFunctions.js');
-//var mongoose     = require('mongoose').connect('mongodb://localhost/quotes');
-//var Schema       = mongoose.Schema;
-var config       = require('./config.js').config;
-var uri          = config.mongoLabsUri;
+var express          = require('express');
+var app              = express();
+var server           = require('http').createServer(app);
+var redis            = require('redis');
+var client           = redis.createClient();
+var path             = require('path');
+var _                = require('underscore');
+var quoteFactory     = require('./modules/quotes.js');
+var uuid             = require('node-uuid');
+var redisHelper      = require('./modules/redisFunctions.js');
+//var mongoose       = require('mongoose').connect('mongodb://localhost/quotes');
+//var Schema         = mongoose.Schema;
+var config           = require('./config.js').config;
+// var passport         = require('passport');
+// var LocalStrategy    = require('passport-local').Strategy;
+// var FacebookStrategy = require('passport-facebook').Strategy;
+// var TwitterStrategy  = require('passport-twitter').Strategy;
+var uri              = config.mongoLabsUri;
 
 
 app.configure(function() {
@@ -31,6 +35,9 @@ app.configure(function() {
   // when the secret is passed, used 
   // for signing the cookies.
   app.use(express.cookieParser(config.cookieParserKey));
+//   app.use(express.session({ secret: config.sessionSecret }));
+//   app.use(passport.initialize());
+//   app.use(passport.session());
   app.use(app.router);
   app.use(express.static(path.join(__dirname, 'assets')));
 });
