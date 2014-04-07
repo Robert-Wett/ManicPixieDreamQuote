@@ -1,0 +1,8 @@
+var CONFIG = {
+    min: 1,
+    max: 25,
+    mongoLabsUri: 'mongodb://<dbuser>:<dbpassword>@something.mongolab.com:port/quotes',
+    cookieParserKey: 'add-your-key-here'
+};
+
+exports.config = CONFIG;

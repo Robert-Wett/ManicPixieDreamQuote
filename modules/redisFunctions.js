@@ -1,3 +1,6 @@
+var redis  = require('redis');
+var client = redis.createClient();
+var quotes = require('./quoteBank.js').quotes;
 /*----------
 redis stuff
 ------------*/
@@ -10,7 +13,9 @@ var qUpvote = function(client, userId, quoteId) {
   // Add the user to the list of users who have voted this quote up.
   // If the user is already in the list, do nothing and return.
   client.sismember('ups:', 'user:' + userId, function( err, reply ) {
-    if (reply === 1) return;
+    if (reply) return;
+    else
+      client.sadd('ups:', 'user:' + userId, redisCallback);
   });
 
   console.log('Upvoting ' + quoteId);
@@ -26,7 +31,9 @@ var qDownvote = function(client, userId, quoteId) {
   // Add the user to the list of users who have voted this quote down.
   // If the user is already in the list, do nothing and return.
   client.sismember('downs:', 'user:' + userId, function( err, reply ) {
-    if (reply === 1) return;
+    if (reply) return;
+    else
+      client.sadd('downs:', 'user:' + userId, redisCallback);
   });
 
   console.log('Downvoting ' + 'quote:' + quoteId);
@@ -61,8 +68,50 @@ var qShown = function( client, quoteId ) {
   client.zincrby('quote:served', 1, 'quote:' + quoteId, function(e, r){});
 };
 
+var addEntriesToRedisDatabase = function(postedBy) {
+  var poster = postedBy || "admin";
+  var quoteObject;
+  var quoteKey;
+  var _id;
 
-exports.upvote   = qUpvote;
-exports.downvote = qDownvote;
-exports.create   = qCreate;
-exports.showed   = qShown;
+  // Container for redis console output
+  var rOutput = {
+    err: [],
+    replies: []
+  };
+
+  function handleOutput( err, reply ) {
+    if (err) {
+      rOutput.err.push(err);
+    } else if (reply) {
+      rOutput.replies.push(reply);
+    }
+  }
+
+  for ( var i = 0; i < quotes.length; i++ ) {
+    _id         = i;
+    quoteKey    = 'quote:' + _id;
+    quoteObject = {
+      'body'    : quotes[_id],
+      'author'  : poster,
+      'created' : new Date().getTime(),
+      'score'   : 0
+    };
+
+    client.hmset(quoteKey, quoteObject, handleOutput);
+    client.zadd('score:', 0.0, quoteKey, handleOutput);
+    client.sadd('voted:' + _id, 'admin');
+    //client.zadd('voted:', )
+    //client.incr('quote:', quoteKey, handleOutput);
+  }
+
+  return rOutput;
+};
+
+
+exports.upvote       = qUpvote;
+exports.downvote     = qDownvote;
+exports.create       = qCreate;
+exports.showed       = qShown;
+exports.client       = client;
+exports.buildRedisDb = addEntriesToRedisDatabase;
