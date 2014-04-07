@@ -9,6 +9,7 @@
         "nodemon": "*",
         "connect-assets": "3.x",
         "node-uuid": "1.4.1",
+        "mongoose": "*",
         "passport": "*",
         "passport-local": "*",
         "passport-facebook": "*",
