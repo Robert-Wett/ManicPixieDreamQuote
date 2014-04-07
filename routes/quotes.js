@@ -1,40 +1,49 @@
 var quoteFactory = require('../modules/quotes.js');
+var redisHelper  = require('./modules/redisFunctions.js');
+var resHeaders   = {
+  'Content-Type': 'application/json',
+  "Access-Control-Allow-Origin": "*"
+};
 
 /*
- * Quote routes
+ * GET home page.
  */
 
- module.exports = function(app) {
-    // Pull a random quote
-    app.get('/quote', function(req, res) {
-        
-        res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});
-        res.write(JSON.stringify(quoteFactory.randomSet(config.min, true)));
-        res.end();
-    });
+module.exports = {
 
-    // Pull a specific quote
-    app.get('/quote/:id', function(req, res) {
-        res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});
-        res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
-        res.end();
-    });
+  // app.get('/api/quote'...)
+  getRandom: function(req, res) {
+    res.writeHead(200, resHeaders);
+    res.write(JSON.stringify(quoteFactory.randomSet( config.min, true )));
+  },
 
-//------ Testing, kind of - just returns the query params as a quote.
-//    app.get('/userquote/:quote', function(req, res) {
-//        var userInput = req.params.quote;
-//        res.render('index', {quoteBody: userInput});
-//    });
+  getById: function(req, res) {
+    res.writeHead(200, resHeaders);
+    res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
+  },
 
-    // POST
-    app.post('/quote/', function(req, res) {
-        var quoteId = req.body.id,
-            action  = req.body.action,
-            cookie  = req.cookies.mpdq,
-            ret;
+  postAction: function(req, res) {
+    // JIC, default to 'NOTLOGGED' if we didn't have the cookie set for some reason.
+    var userId   = 'user:' + (req.signedCookies['manicpixiedreamquote'] || 'NOTLOGGED');
+    var quoteId  = req.body.id;
+    var action   = req.body.action;
 
-        ret = app.handleAction(req, cookie, quoteId, action);
-        // TODO: Do something with the response
-        res.write(ret);
-    });    
+    app.handlePost(userId, quoteId, action);
+  }
+};
+
+//----------------
+// Helper Methods
+//----------------
+app.handlePost = function(userId, quoteId, action) {
+  switch (action) {
+    case 'share':
+      return app.r.share(u, quoteId);
+    case 'up':
+      redisHelper.upvote(client, userId, quoteId);
+      break;
+    case 'down':
+      redisHelper.downvote(client, userId, quoteId);
+      break;
+  }
 };
