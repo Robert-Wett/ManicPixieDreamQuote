@@ -8,14 +8,13 @@ var _                = require('underscore');
 var quoteFactory     = require('./modules/quotes.js');
 var uuid             = require('node-uuid');
 var redisHelper      = require('./modules/redisFunctions.js');
-//var mongoose       = require('mongoose').connect('mongodb://localhost/quotes');
-//var Schema         = mongoose.Schema;
 var config           = require('./config.js').config;
+var mongoose         = require('mongoose').connect(config.mongoLabsUri);
+var Schema           = mongoose.Schema;
 // var passport         = require('passport');
 // var LocalStrategy    = require('passport-local').Strategy;
 // var FacebookStrategy = require('passport-facebook').Strategy;
 // var TwitterStrategy  = require('passport-twitter').Strategy;
-var uri              = config.mongoLabsUri;
 
 
 app.configure(function() {
@@ -68,8 +67,8 @@ app.get('/', function(req, res) {
 
   var firstQuote = quoteSet.shift();
   var data = {
-    activeQuoteId: firstQuote.id,
     activeQuoteBody: firstQuote.body,
+    activeQuoteId: firstQuote.id,
     quoteSet: quoteSet
   };
 
@@ -97,6 +96,7 @@ app.get('/api/quote', function(req, res) {
     "Access-Control-Allow-Origin": "*"
   });
   res.write(JSON.stringify(quoteFactory.randomSet(config.min, true)));
+  res.end();
 });
 
 // Pull a specific quote
@@ -106,12 +106,14 @@ app.get('/api/quote/:id', function(req, res) {
       "Access-Control-Allow-Origin": "*"
     });
   res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
+  res.end();
 });
 
 // Testing, kind of - just returns the query params as a quote.
 app.get('/api/userquote/:quote', function(req, res) {
   var userInput = req.params.quote;
   res.render('index', { quoteBody: userInput });
+  res.end();
 });
 
 // POST
