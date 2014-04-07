@@ -9,10 +9,10 @@ var client           = redisHelper.client;
 var config           = require('./config.js').config;
 var mongoose         = require('mongoose').connect(config.mongoLabsUri);
 var Schema           = mongoose.Schema;
-// var passport         = require('passport');
+var passport         = require('passport');
+var TwitterStrategy  = require('passport-twitter').Strategy;
 // var LocalStrategy    = require('passport-local').Strategy;
 // var FacebookStrategy = require('passport-facebook').Strategy;
-// var TwitterStrategy  = require('passport-twitter').Strategy;
 
 // Temp redis error output
 // This stops the server from bombing if we can't connect when we are in dev.
