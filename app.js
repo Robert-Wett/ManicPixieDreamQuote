@@ -9,8 +9,8 @@ var client           = redisHelper.client;
 var config           = require('./config.js').config;
 var mongoose         = require('mongoose').connect(config.mongoLabsUri);
 var Schema           = mongoose.Schema;
-var passport         = require('passport');
-var TwitterStrategy  = require('passport-twitter').Strategy;
+// var passport         = require('passport');
+// var TwitterStrategy  = require('passport-twitter').Strategy;
 // var LocalStrategy    = require('passport-local').Strategy;
 // var FacebookStrategy = require('passport-facebook').Strategy;
 
