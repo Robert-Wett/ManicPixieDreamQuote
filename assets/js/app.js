@@ -26,7 +26,7 @@ var loadNewQuote = function() {
 
 
 // Need to override the carousel 'next' click and inject our loading logic.
-var carouselGetNext = function carouselGetNext() {
+var carouselGetNext = function() {
 
     // We only want to add a new quote if we reach the second to last added quote.
     // Keeping track of this, we can only make an ajax call if we're at the end of
@@ -39,7 +39,7 @@ var carouselGetNext = function carouselGetNext() {
     // voted on this already, and highlight the appropriate buttons.
     $(".post-btn").css("color", opts.baseColor);
 
-    // Only make an ajax call if we are on the second to last quote
+    // Only make an ajax call if we are on the second to quote
     if (lastQuote === currentQuote) {
         var url = '/api/quote';
         $.ajax(url).success(function(data) {
