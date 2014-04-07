@@ -1,5 +1,7 @@
 var quoteFactory = require('../modules/quotes.js');
-var redisHelper  = require('./modules/redisFunctions.js');
+var redisHelper  = require('../modules/redisFunctions.js');
+var client       = redisHelper.client;
+var config       = require('../config.js').config;
 var resHeaders   = {
   'Content-Type': 'application/json',
   "Access-Control-Allow-Origin": "*"
@@ -15,11 +17,13 @@ module.exports = {
   getRandom: function(req, res) {
     res.writeHead(200, resHeaders);
     res.write(JSON.stringify(quoteFactory.randomSet( config.min, true )));
+    res.end();
   },
 
   getById: function(req, res) {
     res.writeHead(200, resHeaders);
     res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
+    res.end();
   },
 
   postAction: function(req, res) {
@@ -28,17 +32,18 @@ module.exports = {
     var quoteId  = req.body.id;
     var action   = req.body.action;
 
-    app.handlePost(userId, quoteId, action);
+    handlePost(userId, quoteId, action, client);
   }
 };
 
 //----------------
 // Helper Methods
 //----------------
-app.handlePost = function(userId, quoteId, action) {
+handlePost = function(userId, quoteId, action, client) {
   switch (action) {
     case 'share':
-      return app.r.share(u, quoteId);
+      // TODO
+      return;
     case 'up':
       redisHelper.upvote(client, userId, quoteId);
       break;

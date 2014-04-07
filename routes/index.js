@@ -1,4 +1,5 @@
 var quoteFactory = require('../modules/quotes.js');
+var uuid         = require('node-uuid');
 
 /*
  * GET home page.

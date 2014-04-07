@@ -1,13 +1,11 @@
 var express          = require('express');
 var app              = express();
 var server           = require('http').createServer(app);
-var redis            = require('redis');
-var client           = redis.createClient();
 var path             = require('path');
 var _                = require('underscore');
 var quoteFactory     = require('./modules/quotes.js');
-var uuid             = require('node-uuid');
 var redisHelper      = require('./modules/redisFunctions.js');
+var client           = redisHelper.client;
 var config           = require('./config.js').config;
 var mongoose         = require('mongoose').connect(config.mongoLabsUri);
 var Schema           = mongoose.Schema;
@@ -17,6 +15,7 @@ var Schema           = mongoose.Schema;
 // var TwitterStrategy  = require('passport-twitter').Strategy;
 
 // Temp redis error output
+// This stops the server from bombing if we can't connect when we are in dev.
 client.on("error", function (err) {
   console.log("error event - " + client.host + ":" + client.port + " - " + err);
 });
@@ -60,7 +59,7 @@ require('./routes')(app);
 // |_____/ \__\__,_|_|   \__| |_|\__|  \__,_| .__/ 
 //                                          | |    
 //                                          |_|    
-var redisOutput = quoteFactory.buildDb(client);
+var redisOutput = redisHelper.buildRedisDb();
 
 // Skip starting the server up if we get redis errors.
 if (redisOutput.err.length > 0) {
