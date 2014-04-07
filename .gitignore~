@@ -9,4 +9,4 @@ modules/quoteBank.js
 config.js
 
 # Redis dump files
-dump.rdb
+./dump.rdb

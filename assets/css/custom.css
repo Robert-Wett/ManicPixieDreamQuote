@@ -1,0 +1,106 @@
+ .container {
+    margin-top: 10px;
+}
+
+.hero-unit {
+	z-index: -1;
+  padding: 10% 50px 10% 50px;
+/*
+  background-image: url("http://i.imgur.com/3EpXwJUh.gif");
+  background-image: url("http://i.imgur.com/T8E3zzg.png");
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
+  background-image: url("http://i.imgur.com/buUgggo.jpg");
+  background-image: url("http://i.imgur.com/wKYlIhih.jpg");
+*/
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
+	background-size: cover;
+  height:100%;
+  width:100%;
+}
+/*
+#main-container {
+  background-image: url("http://i.imgur.com/FM7jWfph.jpg");
+  background-size: cover;
+  height:500px;
+  width:100%;
+}
+*/
+
+.quoteHolder {
+  text-shadow: .0em .0em 15px rgba(208, 32, 144, 1);
+  font-family: "Abril Fatface";
+  font-size: 150%;
+  color: #FFFAFA;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 100%;
+}
+
+.main-content {
+  text-shadow: .0em .0em 15px rgba(208, 32, 144, 1);
+  font-family: "Abril Fatface";
+  font-size: 150%;
+  color: #FFFAFA;
+  text-align: center;
+  vertical-align: middle;
+}
+
+html { 
+  background: url("http://i.imgur.com/K0Nq7W9h.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+  background-color: transparent;
+}
+
+/*
+.main-holder {
+  height:100%;
+  width:100%;
+  background:url("http://i.imgur.com/3EpXwJUh.gif") no-repeat center;
+  background-size:cover;
+  -webkit-filter: blur(8px);
+  -moz-filter: blur(8px);
+  -o-filter: blur(8px);
+  -ms-filter: blur(8px);
+  filter: blur(13px);
+  position: absolute;
+  left:0;
+  top: 0;
+  z-index: -1;
+}
+*/
+.vote-buttons {
+  display: inline-block;
+  z-index: 9999;
+  color: white;
+}
+
+.small-button {
+  font-style: italic;
+  font-size: 150%;
+}
+
+
+/* Start by setting display:none to make this hidden.
+   Then we position it in relation to the viewport window
+   with position:fixed. Width, height, top and left speak
+   speak for themselves. Background we set to 80% white with
+   our animation centered, and no-repeating */
+.modal {
+    display:    none;
+    position:   fixed;
+    z-index:    1000;
+    top:        0;
+    left:       0;
+    height:     100%;
+    width:      100%;
+    background: rgba( 255, 255, 255, .01 ) 
+                url('http://sampsonresume.com/labs/pIkfp.gif') 
+                50% 50% 
+                no-repeat;
+}

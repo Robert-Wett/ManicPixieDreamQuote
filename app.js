@@ -1,50 +1,168 @@
-var express = require('express')
-,   app = express()
-,   server = require('http').createServer(app)
-,   path = require('path')
-,   _ = require('underscore')
-,   quoteFactory = require('./modules/quotes.js');
+var express          = require('express');
+var app              = express();
+var server           = require('http').createServer(app);
+var redis            = require('redis');
+var client           = redis.createClient();
+var path             = require('path');
+var _                = require('underscore');
+var quoteFactory     = require('./modules/quotes.js');
+var uuid             = require('node-uuid');
+var redisHelper      = require('./modules/redisFunctions.js');
+var config           = require('./config.js').config;
+var mongoose         = require('mongoose').connect(config.mongoLabsUri);
+var Schema           = mongoose.Schema;
+// var passport         = require('passport');
+// var LocalStrategy    = require('passport-local').Strategy;
+// var FacebookStrategy = require('passport-facebook').Strategy;
+// var TwitterStrategy  = require('passport-twitter').Strategy;
 
-var opts = {
-    min: 1,
-    max: 25
-};
 
 app.configure(function() {
-    app.set('port', process.env.PORT || 5000);
-    app.set('views', __dirname + '/views');
-    app.set('view engine', 'ejs');
-    app.use(express.favicon());
-    app.use(express.logger('dev'));
-    app.use(express.bodyParser());
-    app.use(express.methodOverride());
-    app.use(app.router);
-    app.use(express.static(path.join(__dirname, 'public')));
+  app.set('port', process.env.PORT || 3000);
+  app.set('views', __dirname + '/views');
+  app.set('view engine', 'ejs');
+  app.use(require("connect-assets")());
+  app.use(express.favicon());
+  app.use(express.logger('dev'));
+  // parses json, x-www-form-urlencoded, and multipart/form-data
+  app.use(express.bodyParser());
+  // Support URL encoded bodies (re-check if I need this)
+  app.use(express.urlencoded());
+  app.use(express.methodOverride());
+  // parses request cookies, populating
+  // req.cookies and req.signedCookies
+  // when the secret is passed, used 
+  // for signing the cookies.
+  app.use(express.cookieParser(config.cookieParserKey));
+//   app.use(express.session({ secret: config.sessionSecret }));
+//   app.use(passport.initialize());
+//   app.use(passport.session());
+  app.use(app.router);
+  app.use(express.static(path.join(__dirname, 'assets')));
 });
 
+
+//  _____             _            
+// |  __ \           | |           
+// | |__) |___  _   _| |_ ___  ___ 
+// |  _  // _ \| | | | __/ _ \/ __|
+// | | \ \ (_) | |_| | ||  __/\__ \
+// |_|  \_\___/ \__,_|\__\___||___/
+//                                 
+
+// Default
 app.get('/', function(req, res) {
-    var quote = quoteFactory.randomSet(opts.min, true);
-    console.log(quote);
-    //res.render('layout', {title: "Manic Pixie Dream Girl"});
-    res.render('index', {quote: quote, author: "-girl"});
+  var quoteDict = {};
+  if (!req.signedCookies['manicpixiedreamquote']) {
+    var userCookieId = uuid.v1();
+    res.cookie('manicpixiedreamquote', userCookieId, {signed: true});
+  }
+
+  // Pull 2 quotes
+  var quoteSet = quoteFactory.randomSet(2, true);
+
+  for (var i = 0; i < quoteSet.length; i++) {
+    quoteDict[quoteSet[i].id] = quoteSet[i].body;
+  }
+
+  var firstQuote = quoteSet.shift();
+  var data = {
+    activeQuoteBody: firstQuote.body,
+    activeQuoteId: firstQuote.id,
+    quoteSet: quoteSet
+  };
+
+  res.render('carousel-index', data);
 });
+
+// Deep-Link
+app.get('/quote/:id', function(req, res) {
+  var quote = quoteFactory.getQuote(req.params.id);
+  res.render('index', { quoteBody: quote.body });
+});
+
+
+//                    _____ _____  
+//              /\   |  __ \_   _|
+//  ______     /  \  | |__) || |  
+// |______|   / /\ \ |  ___/ | |  
+//           / ____ \| |    _| |_ 
+//          /_/    \_\_|   |_____|
 
 // Pull a random quote
 app.get('/api/quote', function(req, res) {
-    res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});
-    res.write(JSON.stringify(quoteFactory.randomSet(opts.min, true)));
-    res.end();
+  res.writeHead(200, {
+    'Content-Type': 'application/json',
+    "Access-Control-Allow-Origin": "*"
+  });
+  res.write(JSON.stringify(quoteFactory.randomSet(config.min, true)));
+  res.end();
 });
 
 // Pull a specific quote
 app.get('/api/quote/:id', function(req, res) {
-    res.writeHead(200, {'Content-Type': 'application/json', "Access-Control-Allow-Origin": "*"});
-    res.write(JSON.stringify(quoteFactory.getQuote(Number(id))));
-    res.end();
+  res.writeHead(200, {
+      'Content-Type': 'application/json',
+      "Access-Control-Allow-Origin": "*"
+    });
+  res.write(JSON.stringify(quoteFactory.getQuote(req.params.id)));
+  res.end();
+});
+
+// Testing, kind of - just returns the query params as a quote.
+app.get('/api/userquote/:quote', function(req, res) {
+  var userInput = req.params.quote;
+  res.render('index', { quoteBody: userInput });
+  res.end();
+});
+
+// POST
+app.post('/api/quote/', function(req, res) {
+  // JIC, default to 'NOTLOGGED' if we didn't have the cookie set for some reason.
+  var userId   = 'user:' + (req.signedCookies['manicpixiedreamquote'] || 'NOTLOGGED');
+  var quoteId  = req.body.id;
+  var action   = req.body.action;
+
+  app.handlePost(userId, quoteId, action);
+});
+
+//----------------
+// Helper Methods
+//----------------
+app.handlePost = function(userId, quoteId, action) {
+  switch (action) {
+    case 'share':
+      return app.r.share(u, quoteId);
+    case 'up':
+      redisHelper.upvote(client, userId, quoteId);
+      break;
+    case 'down':
+      redisHelper.downvote(client, userId, quoteId);
+      break;
+  }
+};
+
+client.on("error", function (err) {
+  console.log("error event - " + client.host + ":" + client.port + " - " + err);
 });
 
 
-// Start it up
-server.listen(app.get('port'), function() {
+//   _____ _             _     _ _                 
+//  / ____| |           | |   (_) |                
+// | (___ | |_ __ _ _ __| |_   _| |_   _   _ _ __  
+//  \___ \| __/ _` | '__| __| | | __| | | | | '_ \ 
+//  ____) | || (_| | |  | |_  | | |_  | |_| | |_) |
+// |_____/ \__\__,_|_|   \__| |_|\__|  \__,_| .__/ 
+//                                          | |    
+//                                          |_|    
+var redisOutput = quoteFactory.buildDb(client);
+
+// Skip starting the server up if we get redis errors.
+if (redisOutput.err.length > 0) {
+  console.log("".join(redisOutput.err));
+} else {
+  console.log("Redis commands executed with no errors - starting server.");
+  server.listen(app.get('port'), function() {
     console.log("Express server listening on port " + app.get('port'));
-});
+  });
+}
