@@ -9,13 +9,15 @@ function redisCallback(error, reply) {
   if (error) console.log('REDIS ERR: ' + error);
 }
 
-var qUpvote = function(client, userId, quoteId) {
+var qUpvote = function(userId, quoteId) {
   // Add the user to the list of users who have voted this quote up.
   // If the user is already in the list, do nothing and return.
   client.sismember('ups:', 'user:' + userId, function( err, reply ) {
     if (reply) return;
-    else
+    else {
       client.sadd('ups:', 'user:' + userId, redisCallback);
+      client.sadd('active:', 'quote:' + quoteId, redisCallback);
+    }
   });
 
   console.log('Upvoting ' + quoteId);
@@ -27,13 +29,15 @@ var qUpvote = function(client, userId, quoteId) {
   client.zincrby('score:', 1, 'quote:' + quoteId, redisCallback);
 };
 
-var qDownvote = function(client, userId, quoteId) {
+var qDownvote = function(userId, quoteId) {
   // Add the user to the list of users who have voted this quote down.
   // If the user is already in the list, do nothing and return.
   client.sismember('downs:', 'user:' + userId, function( err, reply ) {
     if (reply) return;
-    else
+    else {
       client.sadd('downs:', 'user:' + userId, redisCallback);
+      client.sadd('active:', 'quote:' + quoteId, redisCallback);
+    }
   });
 
   console.log('Downvoting ' + 'quote:' + quoteId);
@@ -45,7 +49,7 @@ var qDownvote = function(client, userId, quoteId) {
   client.zincrby('score:', -1, 'quote:' + quoteId, redisCallback);
 };
 
-var qCreate = function(client, userId, body) {
+var qCreate = function(userId, body) {
   client.incr('quote:', function( err, quoteId ) {
     if (err) return;
 
@@ -60,11 +64,11 @@ var qCreate = function(client, userId, body) {
   });
 };
 
-var uCreate = function(client, userId) {
+var uCreate = function(userId) {
   client.sadd('users', 'user:' + userId, redisCallback);
 };
 
-var qShown = function( client, quoteId ) {
+var qShown = function( quoteId ) {
   client.zincrby('quote:served', 1, 'quote:' + quoteId, function(e, r){});
 };
 
@@ -107,6 +111,7 @@ var addEntriesToRedisDatabase = function(postedBy) {
 
   return rOutput;
 };
+
 
 
 exports.upvote       = qUpvote;

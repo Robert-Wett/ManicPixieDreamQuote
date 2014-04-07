@@ -1,6 +1,6 @@
 var quoteFactory = require('../modules/quotes.js');
 var redisHelper  = require('../modules/redisFunctions.js');
-var client       = redisHelper.client;
+//var client       = redisHelper.client;
 var config       = require('../config.js').config;
 var resHeaders   = {
   'Content-Type': 'application/json',
@@ -32,23 +32,23 @@ module.exports = {
     var quoteId  = req.body.id;
     var action   = req.body.action;
 
-    handlePost(userId, quoteId, action, client);
+    handlePost(userId, quoteId, action);
   }
 };
 
 //----------------
 // Helper Methods
 //----------------
-handlePost = function(userId, quoteId, action, client) {
+handlePost = function(userId, quoteId, action) {
   switch (action) {
     case 'share':
       // TODO
       return;
     case 'up':
-      redisHelper.upvote(client, userId, quoteId);
+      redisHelper.upvote(userId, quoteId);
       break;
     case 'down':
-      redisHelper.downvote(client, userId, quoteId);
+      redisHelper.downvote(userId, quoteId);
       break;
   }
 };

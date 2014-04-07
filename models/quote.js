@@ -1,15 +1,16 @@
 var mongoose = require('mongoose');
 var Schema   = mongoose.Schema;
+var ObjectId = Schema.ObjectId;
 
 var QuoteSchema = new Schema({
-    _id   : String,
-    body  : String,
-    author: String,
-    hidden: Boolean,
-    comments: [{
-        body  : String,
-        author: String,
-        date  : Date
+    _quote   : ObjectId,
+    body     : String,
+    _user_id : ObjectId,
+    hidden   : Boolean,
+    comments : [{
+        body  : string,
+        _user : objectid,
+        date  : date
     }],
     date: {
         type   : Date,
@@ -21,3 +22,5 @@ var QuoteSchema = new Schema({
         shares: Number
     }
 });
+
+module.exports = mongoose.model('Quote', QuoteSchema);
