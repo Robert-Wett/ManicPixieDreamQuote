@@ -34,17 +34,25 @@ module.exports = {
     });
   },
 
+  // Assume `q` as a qualified json object in the form of the
+  // `Quote` document.
   addQuote: function( q ) {
     var _quote = new Quote(q);
     _quote.save(cb.consoleLog);
   },
 
-  addComment: function() {
-    //TODO
+  // Assume `c` as a qualified json object in the form of the
+  // `Comment` document.
+  addComment: function( c ) {
+    var _comment = new Comment(c);
+    _comment.save(cb.consoleLog);
   },
 
-  addUser: function() {
-    //TODO
+  // Assume `u` as a qualified json object in the form of the
+  // `User` document.
+  addUser: function( u ) {
+    var _user = new User(u);
+    _user.save(cb.consoleLog);
   }
 
 };
