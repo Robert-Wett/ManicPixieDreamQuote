@@ -1,5 +1,5 @@
-var q = require('./quoteBank.js')
-,   _ = require('underscore');
+var quotes = require('./quoteBank.js').quotes;
+var _      = require('underscore');
 
 function quoteObj(id, body) {
   this.id   = id;
@@ -9,7 +9,7 @@ function quoteObj(id, body) {
 var getRandomSet = function(quoteAmount, returnQuote) {
   var numberList   = [];
   var returnQuotes = [];
-  var max          = q.quotes.length;
+  var max          = quotes.length;
   var num;
 
   while (numberList.length < quoteAmount) {
@@ -23,7 +23,7 @@ var getRandomSet = function(quoteAmount, returnQuote) {
     // option in just in case, but it's really not used.
     if (returnQuote) {
       _.each(numberList, function(num) {
-        returnQuotes.push(new quoteObj(num, q.quotes[num]));
+        returnQuotes.push(new quoteObj(num, quotes[num]));
       });
 
       return returnQuotes;
@@ -37,15 +37,15 @@ var getRandomInt = function(min, max) {
 };
 
 var getSpecificQuote = function(id) {
-  var max = q.quotes.length,
+  var max = quotes.length,
   _id;
 
   if (id > max || id < 0) {
     _id = getRandomInt(0, max);
-    return new quoteObj(_id, q.quotes[_id]);
+    return new quoteObj(_id, quotes[_id]);
   }
 
-  return new quoteObj(id, q.quotes[id]);
+  return new quoteObj(id, quotes[id]);
 };
 
 
