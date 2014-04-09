@@ -9,7 +9,6 @@ var QuoteSchema = new Schema({
     hidden   : Boolean,
     comments : [{
         body  : string,
-        _user : objectid,
         date  : date
     }],
     date: {
