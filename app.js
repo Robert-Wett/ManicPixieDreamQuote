@@ -1,18 +1,19 @@
-var express          = require('express');
-var app              = express();
-var server           = require('http').createServer(app);
-var path             = require('path');
-var _                = require('underscore');
-var quoteFactory     = require('./modules/quotes.js');
-var redisHelper      = require('./modules/redisFunctions.js');
-var client           = redisHelper.client;
-var config           = require('./config.js').config;
-var mongoose         = require('mongoose').connect(config.mongoLabsUri);
-var Schema           = mongoose.Schema;
-// var passport         = require('passport');
-// var TwitterStrategy  = require('passport-twitter').Strategy;
-// var LocalStrategy    = require('passport-local').Strategy;
-// var FacebookStrategy = require('passport-facebook').Strategy;
+var express      = require('express');
+var app          = express();
+var server       = require('http').createServer(app);
+var path         = require('path');
+var _            = require('underscore');
+var quoteFactory = require('./modules/quotes.js');
+var redisHelper  = require('./modules/redisFunctions.js');
+var client       = redisHelper.client;
+var config       = require('./config.js').config;
+var DB           = require('./accessMongo.js');
+//var mongoose         = require('mongoose').connect(config.mongoLabsUri);
+//var Schema           = mongoose.Schema;
+//var passport         = require('passport');
+//var TwitterStrategy  = require('passport-twitter').Strategy;
+//var LocalStrategy    = require('passport-local').Strategy;
+//var FacebookStrategy = require('passport-facebook').Strategy;
 
 // Temp redis error output
 // This stops the server from bombing if we can't connect when we are in dev.
@@ -43,6 +44,7 @@ app.configure(function() {
 });
 
 
+
 //  _____             _            
 // |  __ \           | |           
 // | |__) |___  _   _| |_ ___  ___ 
@@ -60,7 +62,17 @@ require('./routes')(app);
 //                                          | |    
 //                                          |_|    
 var redisOutput = redisHelper.buildRedisDb();
-
+DB.getConnection(config.mongoLabsUri, function( err, res ) {
+  if (err) console.log(err);
+  else {
+    /*
+    DB.initDb(function(err, res) {
+      if (err) console.log(err);
+      else if (res) console.log(res);
+    });
+    */
+  }
+});
 // Skip starting the server up if we get redis errors.
 if (redisOutput.err.length > 0) {
   console.log("".join(redisOutput.err));
