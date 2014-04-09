@@ -3,17 +3,19 @@ var mongoose     = require('mongoose');
 var quotes       = require('./quoteBank.js').quotes;
 var Schema       = mongoose.Schema;
 var _            = require('underscore');
-// Bring in all the models
 var Quote        = require('./models/quote.js');
 
 var cb = {
+
   consoleLog: function( err, reply ) {
     if (err) console.log(err);
     else console.log(reply);
   },
+
   mongoOpen: function() {
     'Mongo connection established!';
   }
+
 };
 
 module.exports = {
