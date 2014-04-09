@@ -3,14 +3,16 @@ var Schema   = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
 var QuoteSchema = new Schema({
-    _quote   : ObjectId,
-    body     : String,
-    _user_id : ObjectId,
-    hidden   : Boolean,
+    _id    : Number,
+    body   : String,
+    hidden : Boolean,
+    user   : [{
+        first_name : String,
+        last_name  : String
+    }],
     comments : [{
-        body  : string,
-        _user : objectid,
-        date  : date
+        body : String,
+        date : Date
     }],
     date: {
         type   : Date,
