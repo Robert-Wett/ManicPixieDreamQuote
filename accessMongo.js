@@ -17,10 +17,12 @@ var cb = {
 };
 
 module.exports = {
+
   getConnection: function( mongoUri ) {
     mongoose.connect(mongoUri, cb.consoleLog);
     mongoose.connection.on('open', cb.mongoOpen);
   },
+
   initDb: function( client, callback ) {
     _.each(quotes, function(quote) {
       var _quote = new Quote({
@@ -29,14 +31,18 @@ module.exports = {
       _quote.save(cb.consoleLog);
     });
   },
+
   addQuote: function( q ) {
     var _quote = new Quote(q);
     _quote.save(cb.consoleLog);
   },
+
   addComment: function() {
     //TODO
   },
+
   addUser: function() {
     //TODO
   }
+
 };
