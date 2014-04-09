@@ -11,8 +11,13 @@ var QuoteSchema = new Schema({
         last_name  : String
     }],
     comments : [{
+<<<<<<< HEAD
         body : String,
         date : Date
+=======
+        body  : string,
+        date  : date
+>>>>>>> 5b7e2d15c62b4a3e4d113cafe9f45c747cd3f100
     }],
     date: {
         type   : Date,

@@ -12,19 +12,6 @@ var opts = {
                      '</div>'
 };
 
-var loadNewQuote = function() {
-    $(".post-btn").css("color", opts.baseColor);
-    var url = '/api/quote';
-    $(".quoteHolder").fadeOut(250, function() {
-        $.ajax(url).success(function(data) {
-            $(".quoteHolder").html(data[0].body);
-            $(".quoteHolder").fadeIn(250);
-        });
-    });
-};
-
-
-
 // Need to override the carousel 'next' click and inject our loading logic.
 var carouselGetNext = function() {
 
@@ -61,7 +48,6 @@ var carouselGetNext = function() {
 var carouselGetPrevious = function carouselGetPrevious() {
     $(".post-btn").css("color", opts.baseColor);
 };
-
 
 
 /*****************
@@ -133,4 +119,25 @@ $(document).ready(function() {
         });
     });
 });
+
+
+/*
+        ____                                  __           __
+       / __ \___  ____  ________  _________ _/ /____  ____/ /
+      / / / / _ \/ __ \/ ___/ _ \/ ___/ __ `/ __/ _ \/ __  / 
+     / /_/ /  __/ /_/ / /  /  __/ /__/ /_/ / /_/  __/ /_/ /  
+    /_____/\___/ .___/_/   \___/\___/\__,_/\__/\___/\__,_/   
+              /_/                                            
+ */
+
+var loadNewQuote = function() {
+    $(".post-btn").css("color", opts.baseColor);
+    var url = '/api/quote';
+    $(".quoteHolder").fadeOut(250, function() {
+        $.ajax(url).success(function(data) {
+            $(".quoteHolder").html(data[0].body);
+            $(".quoteHolder").fadeIn(250);
+        });
+    });
+};
 
