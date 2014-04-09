@@ -19,15 +19,15 @@ var getRandomSet = function(quoteAmount, returnQuote) {
     }
   }
 
-    // Return the value, not the list. This is the default. I kept the other
-    // option in just in case, but it's really not used.
-    if (returnQuote) {
-      _.each(numberList, function(num) {
-        returnQuotes.push(new quoteObj(num, quotes[num]));
-      });
+  // Return the value, not the list. This is the default. I kept the other
+  // option in just in case, but it's really not used.
+  if (returnQuote) {
+    _.each(numberList, function(num) {
+      returnQuotes.push(new quoteObj(num, quotes[num]));
+    });
 
-      return returnQuotes;
-    }
+    return returnQuotes;
+  }
 
     return numberList;
 };
