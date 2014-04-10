@@ -29,7 +29,7 @@ module.exports = {
 
     firstQuote = quoteSet.shift();
 
-    res.render('carousel-index', {
+    res.render('index', {
       activeQuoteBody: firstQuote.body,
       activeQuoteId: firstQuote.id,
       quoteSet: quoteSet

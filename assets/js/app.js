@@ -19,7 +19,7 @@ var carouselGetNext = function() {
     // Keeping track of this, we can only make an ajax call if we're at the end of
     // the list.
     var lastQuote    = $(".item:nth-last-child(2)").attr("id");
-    var currentQuote = $(".active").attr("id");
+    var currentQuote = $(".item.active").attr("id");
 
     // Reset the interaction buttons back to white, or whatever the base color is.
     // We do this no matter what - we need to check against redis to see if we've 
