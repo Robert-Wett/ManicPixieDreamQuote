@@ -22,6 +22,18 @@ var cb = {
 
 };
 
+
+var helpers = {
+
+  getRandomInt: function(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  },
+
+  maxQuotes: 281
+
+};
+
+
 module.exports = {
 
   getConnection: function( mongoUri, callback ) {
@@ -54,6 +66,20 @@ module.exports = {
 
     // `null` callback to signal no errors.
     callback(null, 'Successfully added entries.');
+  },
+
+  // Assume `q` as a qualified json object in the form of the
+  // `Quote` document.
+  getRandomQuote: function( callback ) {
+    callback   = callback || cb.consoleLog;
+
+    var quoteId = helpers.getRandomInt(1, helpers.maxQuotes);
+
+    Quote
+    .find({ '_id': quoteId })
+    .exec(function( err, quote ) {
+      callback(null, quote);
+    });
   },
 
   // Assume `q` as a qualified json object in the form of the
