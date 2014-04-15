@@ -1,5 +1,6 @@
 var quoteFactory = require('../modules/quotes.js');
 var redisHelper  = require('../modules/redisFunctions.js');
+var db           = require('../accessMongo.js');
 //var client       = redisHelper.client;
 var config       = require('../config.js').config;
 var resHeaders   = {
@@ -12,7 +13,17 @@ var resHeaders   = {
  */
 
 module.exports = {
-
+  /*
+   * Routes to pull from Mongo
+   */
+   getRandomFromDb: function(req, res) {
+    db.getRandomQuote(function(err, reply) {
+      // todo
+    });
+   },
+  /*
+   * Routes to pull from the in-memory array
+   */
   // app.get('/api/quote'...)
   getRandom: function(req, res) {
     res.writeHead(200, resHeaders);
